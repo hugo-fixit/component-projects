@@ -1,2 +1,5 @@
-[projetcs]
+# Translations for English
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+[projects]
 relatedArticles = "Related Articles"

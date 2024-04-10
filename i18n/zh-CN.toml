@@ -1,2 +1,6 @@
-[projetcs]
+# Translations for Simplified Chinese
+# 简体中文的翻译
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+[projects]
 relatedArticles = "相关文章"
