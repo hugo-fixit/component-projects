@@ -1,6 +1,6 @@
 # component-projects
 
-A Hugo theme component with layout `projects` and shortcodes.
+A Hugo theme component with layout `projects` and shortcodes to display GitHub card style pinned repositories.
 
 ## Requirements
 
@@ -22,6 +22,24 @@ theme = ["FixIt", "component-projects"]
 ```
 
 To learn about theme components of hugo and how to use them, check out <https://gohugo.io/hugo-modules/theme-components/>.
+
+## Configuration
+
+Obtaining repositories information relies on GitHub official API. Before starting to use it, it is recommended to generate personal access token on GitHub to prevent GitHub API usage limit.
+
+1. Go to your GitHub account settings, select the scope named `public_repo` to generate personal access token.
+2. Set `dev.githubToken` in `config/development/params.toml`
+
+    ```toml
+    [dev]
+      githubToken = "your-person-access-token"
+    ```
+
+3. ignore `config/production/params.toml` in `.gitignore` to prevent token from being pushed to remote repository.
+
+    ```bash
+    echo "config/production/params.toml" >> .gitignore
+    ```
 
 ## Usage
 

@@ -23,7 +23,7 @@
 
     {{- /* TODO 要提炼出一个 partial，后续需要实现 shortcodes 共用 */ -}}
     {{- /* Get the data of the current language, if not, get the default */ -}}
-    {{- $data := index .Site.Data (printf "projects.%v" .Language.LanguageCode) | default .Site.Data.projects -}}
+    {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
     {{- range $group := $data -}}
       <h2 id="{{ $group.title | anchorize }}" class="projects-group-title">{{ $group.title }}</h2>
       {{- with $group.description -}}
@@ -72,7 +72,7 @@
       </div>
     {{- end -}}
 
-    <h2 class="projects-group-title">相关文章</h2>
+    <h2 class="projects-group-title">{{ T "projects.relatedArticles" }}</h2>
     {{- /* Total page and word count */ -}}
     {{- $localData := newScratch -}}
     {{- range .Pages -}}
