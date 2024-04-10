@@ -25,16 +25,20 @@
     margin: 0 0.5rem;
   }
 
-  .related-articles-summary {
+  .group-title-summary {
     display: inline;
+    color: var(--color-muted);
+    border-color: var(--bc-gh-repo-card);
     border-style: solid;
-    border-width: 1px;
-    font-size: 85%;
+    border-width: var(--bw-gh-repo-card);
+    font-size: 0.75rem;
     font-weight: 500;
     line-height: 14px;
     border-radius: 2em;
-    padding: .12em .6em;
+    padding: .25em 1em;
     white-space: nowrap;
-    opacity: 0.78;
+    transform: translateY(-40px);
+    position: absolute;
+    right: 0;
   }
 }

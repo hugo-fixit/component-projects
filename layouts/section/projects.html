@@ -96,7 +96,7 @@
     {{- end -}}
     {{- with ($localData.Get "totalWordCount") -}}
       {{- $totalWordCount := partial "function/format-number" (dict "NUMBER" .) -}}
-      <div title='{{- T "section.archiveCounter" $.Pages.Len }} {{ T "section.totalWordCount" . }}' class="related-articles-summary">
+      <div title='{{- T "section.archiveCounter" $.Pages.Len }} {{ T "section.totalWordCount" . }}' class="group-title-summary">
         {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" $totalWordCount) -}}
       </div>
     {{- end -}}
