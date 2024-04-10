@@ -5,6 +5,8 @@
 
 {{- define "content" -}}
   {{- $params := partial "function/params.html" -}}
+  {{- $options := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
+
   <div class="page archive projects">
     <div class="header">
       {{- /* Title */ -}}
@@ -22,7 +24,6 @@
     </div>
 
     {{- /* TODO 要提炼出一个 partial，后续需要实现 shortcodes 共用 */ -}}
-    {{- /* Get the data of the current language, if not, get the default */ -}}
     {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
     {{- range $group := $data -}}
       <h2 id="{{ $group.title | anchorize }}" class="projects-group-title">{{ $group.title }}</h2>
@@ -31,7 +32,11 @@
       {{- end -}}
       <div class="gh-repo-card-container">
         {{- range $repo := $group.repos -}}
-          {{- $repoInfo := partial "function/get-github-repo" $repo -}}
+          {{- $url := printf "https://api.github.com/repos/%v" $repo -}}
+          {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $options ) -}}
+          {{- if not $repoInfo -}}
+            {{- continue -}}
+          {{- end -}}
           {{- $startsURL := printf "https://github.com/%v/stargazers" $repo -}}
           {{- $forksURL := printf "https://github.com/%v/forks" $repo -}}
           {{- $startsCount := partial "function/format-number" (dict "NUMBER" $repoInfo.stargazers_count) -}}
