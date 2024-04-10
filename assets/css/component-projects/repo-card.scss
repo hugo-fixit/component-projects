@@ -1,16 +1,22 @@
 // GitHub Repository Card
 // TODO dark mode
 .gh-repo-card {
+  --bg-gh-repo-card: #ffffff;
+  --bc-gh-repo-card: #d0d7de;
+  --br-gh-repo-card: 0.375rem;
+  --bw-gh-repo-card: MAX(1px, 0.0625rem);
+  --color-muted: #636c76;
+  --color-attention: #9a6700;
+  --bc-attention: #bf8700;
   box-sizing: border-box;
   flex-shrink: 0;
   width: calc(50% - 0.5rem);
   padding: 16px;
-  background-color: var(--bg-gh-repo-card, #ffffff);
-  border-color: var(--bc-gh-repo-card, #d0d7de);
-  border-radius: var(--br-gh-repo-card, 0.375rem);
+  background-color: var(--bg-gh-repo-card);
+  border-color: var(--bc-gh-repo-card);
+  border-radius: var(--br-gh-repo-card);
   border-style: solid;
-  border-width: var(--bw-gh-repo-card, MAX(1px, 0.0625rem));
-  --color-muted: #636c76;
+  border-width: var(--bw-gh-repo-card);
 
   svg {
     display: inline-block;
@@ -53,9 +59,9 @@
       .repo-visibility {
         display: inline;
         color: var(--color-muted);
-        border-color: var(--bc-gh-repo-card, #d0d7de);
+        border-color: var(--bc-gh-repo-card);
         border-style: solid;
-        border-width: var(--bw-gh-repo-card, MAX(1px, 0.0625rem));
+        border-width: var(--bw-gh-repo-card);
         flex-shrink: 0;
         font-size: 85%;
         font-weight: 500;
@@ -63,16 +69,32 @@
         border-radius: 2em;
         padding: .12em .5em;
         white-space: nowrap;
+
+        &[data-archived='true'] {
+          color: var(--color-attention);
+          border-color: var(--bc-attention);
+        }
       }
     }
 
+    .repo-fork-from,
     .repo-desc {
-      flex: 1 0 auto;
       margin-top: 0.5rem;
       margin-bottom: 0;
       font-size: 0.75rem;
       color: var(--color-muted);
       line-height: 1.5;
+    }
+    .repo-fork-from {
+      a {
+        color: inherit;
+        &:hover {
+          color: #0969da;
+        }
+      }
+    }
+    .repo-desc {
+      flex: 1 0 auto;
     }
 
     .repo-statistics {
@@ -95,7 +117,7 @@
           display: inline-block;
           width: 12px;
           height: 12px;
-          border: 1px solid var(--bc-gh-repo-card, #d0d7de);
+          border: 1px solid var(--bc-gh-repo-card);
           border-radius: 50%;
         }
       }

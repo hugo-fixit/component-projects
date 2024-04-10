@@ -45,8 +45,12 @@
                 <a href="{{ $repoInfo.html_url }}" class="repo-url" title="{{ $repoInfo.full_name }}" target="_blank">
                   <span>{{ $repoInfo.owner.login }}/</span><span>{{ $repoInfo.name }}</span>
                 </a>
-                <span class="repo-visibility">{{ strings.FirstUpper $repoInfo.visibility }}</span>
+                {{- $visibility := cond $repoInfo.archived (add $repoInfo.visibility " archived") $repoInfo.visibility -}}
+                <span class="repo-visibility" data-archived="{{ $repoInfo.archived }}">{{ strings.FirstUpper $visibility }}</span>
               </div>
+              {{- with $repoInfo.parent -}}
+                <p class="repo-fork-from">Fork from <a href="{{ .html_url }}" target="_blank">{{ .full_name }}</a></p>
+              {{- end -}}
               <p class="repo-desc">{{ $repoInfo.description }}</p>
               <p class="repo-statistics">
                 <span class="repo-lang">
