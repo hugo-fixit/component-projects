@@ -1,0 +1,118 @@
+// GitHub Repository Card
+// TODO dark mode
+.gh-repo-card {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: calc(50% - 0.5rem);
+  padding: 16px;
+  background-color: var(--bg-gh-repo-card, #ffffff);
+  border-color: var(--bc-gh-repo-card, #d0d7de);
+  border-radius: var(--br-gh-repo-card, 0.375rem);
+  border-style: solid;
+  border-width: var(--bw-gh-repo-card, MAX(1px, 0.0625rem));
+  --color-muted: #636c76;
+
+  svg {
+    display: inline-block;
+    overflow: visible !important;
+    vertical-align: text-bottom;
+    fill: currentColor;
+  }
+
+  .repo-card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .repo-name {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+
+      svg {
+        flex-shrink: 0;
+        color: var(--color-muted);
+      }
+
+      .repo-url {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #0969da;
+        font-weight: 400;
+        &:hover {
+          text-decoration: underline;
+        }
+        span:last-child {
+          font-weight: 600;
+        }
+      }
+
+      .repo-visibility {
+        display: inline;
+        color: var(--color-muted);
+        border-color: var(--bc-gh-repo-card, #d0d7de);
+        border-style: solid;
+        border-width: var(--bw-gh-repo-card, MAX(1px, 0.0625rem));
+        flex-shrink: 0;
+        font-size: 85%;
+        font-weight: 500;
+        line-height: 14px;
+        border-radius: 2em;
+        padding: .12em .5em;
+        white-space: nowrap;
+      }
+    }
+
+    .repo-desc {
+      flex: 1 0 auto;
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+
+    .repo-statistics {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+
+      .repo-lang {
+        font-size: inherit;
+
+        .repo-lang-color {
+          box-sizing: border-box;
+          position: relative;
+          top: 1px;
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          border: 1px solid var(--bc-gh-repo-card, #d0d7de);
+          border-radius: 50%;
+        }
+      }
+
+      .repo-stars,
+      .repo-forks {
+        color: inherit;
+        font-size: inherit;
+
+        &:hover {
+          color: #0969da;
+        }
+
+        svg {
+          margin-right: 0.25rem;
+        }
+      }
+    }
+  }
+}

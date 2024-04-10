@@ -1,0 +1,41 @@
+@charset "utf-8";
+@import "repo-card";
+@import "github-lang-colors";
+
+.archive.projects {
+  .single-subtitle {
+    margin-block: 0.25rem;
+    font-size: 1rem;
+  }
+
+  .projects-group-title,
+  .heading-element {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    padding-bottom: .3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid #d0d7deb3;
+  }
+  
+  .gh-repo-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0 0.5rem;
+  }
+
+  .related-articles-summary {
+    display: inline;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 85%;
+    font-weight: 500;
+    line-height: 14px;
+    border-radius: 2em;
+    padding: .12em .6em;
+    white-space: nowrap;
+    opacity: 0.78;
+  }
+}
