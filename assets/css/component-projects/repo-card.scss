@@ -1,6 +1,5 @@
 // GitHub Repository Card
-// TODO dark mode
-.gh-repo-card {
+:root {
   --bg-gh-repo-card: #ffffff;
   --bc-gh-repo-card: #d0d7de;
   --br-gh-repo-card: 0.375rem;
@@ -8,6 +7,19 @@
   --color-muted: #636c76;
   --color-attention: #9a6700;
   --bc-attention: #bf8700;
+  --url-color: #0969da;
+
+  [data-theme='dark'] {
+    --bg-gh-repo-card: #22272e;
+    --bc-gh-repo-card: #444c56;
+    --color-muted: #717e8b;
+    --color-attention: #c69026;
+    --bc-attention: #966600;
+    --url-color: #478be6;
+  }
+}
+
+.gh-repo-card {
   box-sizing: border-box;
   flex-shrink: 0;
   width: calc(50% - 0.5rem);
@@ -46,7 +58,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #0969da;
+        color: var(--url-color);
         font-weight: 400;
         &:hover {
           text-decoration: underline;
@@ -89,7 +101,7 @@
       a {
         color: inherit;
         &:hover {
-          color: #0969da;
+          color: var(--url-color)
         }
       }
     }
@@ -128,7 +140,7 @@
         font-size: inherit;
 
         &:hover {
-          color: #0969da;
+          color: var(--url-color);
         }
 
         svg {
