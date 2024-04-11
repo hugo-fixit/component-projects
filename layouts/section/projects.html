@@ -12,7 +12,9 @@
     <div class="header">
       {{- /* Title */ -}}
       <h1 class="single-title animate__animated animate__pulse animate__faster">
-        {{- dict "Class" "fa-solid fa-laptop-code fa-fw me-1" | partial "plugin/icon.html" -}}
+        {{- with $params.titleIcon -}}
+          {{- dict "Class" (add . " fa-fw me-1") | partial "plugin/icon.html" -}}
+        {{- end -}}
         {{- .Params.Title | default ((T .Section) | default .Section | dict "Some" | T "allSome") }}
       </h1>
       {{- /* Subtitle */ -}}
@@ -134,6 +136,9 @@
       {{- end -}}
       {{- partial "paginator.html" . -}}
     {{- end -}}
+
+    {{- /* Comment */ -}}
+    {{- partial "single/comment.html" . -}}
   </div>
 
   {{- /* component-projects.min.css */ -}}

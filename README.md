@@ -1,5 +1,7 @@
 # component-projects
 
+👉 English README | [简体中文说明](README.zh-cn.md)
+
 A Hugo theme component with layout `projects` and shortcodes to display GitHub card style pinned repositories.
 
 ## Requirements
@@ -61,9 +63,10 @@ hugo new projects/_index.md
 
 Edit the front matter and content of the new page:
 
-```markdown
+```yaml
 ---
 title: My Projects
+titleIcon: fa-solid fa-laptop-code
 subtitle: <https://github.com/Lruihao>
 sectionSlot: Some text to display in the section slot which is above the related articles list.
 layout: projects
