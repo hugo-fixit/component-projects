@@ -4,6 +4,8 @@
 
 A Hugo theme component with layout `projects` and shortcodes to display GitHub card style pinned repositories.
 
+![apple-devices-preview](https://github.com/hugo-fixit/component-projects/assets/33419593/3f75bd94-90df-4057-bee5-cbe2a61422f1)
+
 ## Requirements
 
 - [FixIt](https://github.com/hugo-fixit) v0.3.3 or higher
