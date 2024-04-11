@@ -5,8 +5,13 @@
 
 {{- define "content" -}}
   {{- $params := partial "function/params.html" -}}
-  {{- $options := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
-  {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $options ) -}}
+  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+
+  {{- /* component-projects.min.css */ -}}
+  {{- $options := dict "Source" "css/component-projects/index.scss" "Fingerprint" $fingerprint -}}
+  {{- $toCSS := dict "targetPath" "css/component-projects.min.css" "enableSourceMap" true -}}
+  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
+  {{- partial "plugin/style.html" $options -}}
 
   <div class="page archive projects single">
     <div class="header">
@@ -28,6 +33,8 @@
 
     {{- /* TODO 要提炼出一个 partial，后续需要实现 shortcodes 共用 */ -}}
     {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
+    {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
+    {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
     {{- range $group := $data -}}
       <h2 id="{{ $group.title | anchorize }}" class="projects-group-title">{{ $group.title }}</h2>
       {{- with $group.description -}}
@@ -36,7 +43,7 @@
       <div class="gh-repo-card-container">
         {{- range $repo := $group.repos -}}
           {{- $url := printf "https://api.github.com/repos/%v" $repo -}}
-          {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $options ) -}}
+          {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $headers ) -}}
           {{- if not $repoInfo -}}
             {{- continue -}}
           {{- end -}}
@@ -90,24 +97,24 @@
       </div>
     {{- end -}}
 
-    <h2 class="projects-group-title">{{ T "projects.relatedArticles" }}</h2>
-    {{- /* Total page and word count */ -}}
-    {{- $localData := newScratch -}}
-    {{- range .Pages -}}
-      {{- $localData.Add "totalWordCount" .WordCount -}}
-    {{- end -}}
-    {{- with ($localData.Get "totalWordCount") -}}
-      {{- $totalWordCount := partial "function/format-number" (dict "NUMBER" .) -}}
-      <div title='{{- T "section.archiveCounter" $.Pages.Len }} {{ T "section.totalWordCount" . }}' class="group-title-summary">
-        {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" $totalWordCount) -}}
-      </div>
-    {{- end -}}
-    {{- with $params.sectionSlot -}}
-      <p>{{ . | $.RenderString }}</p>
-    {{- end -}}
-
     {{- /* Paginate */ -}}
     {{- if .Pages -}}
+      <h2 class="projects-group-title">{{ T "projects.relatedArticles" }}</h2>
+      {{- /* Total page and word count */ -}}
+      {{- $localData := newScratch -}}
+      {{- range .Pages -}}
+        {{- $localData.Add "totalWordCount" .WordCount -}}
+      {{- end -}}
+      {{- with ($localData.Get "totalWordCount") -}}
+        {{- $totalWordCount := partial "function/format-number" (dict "NUMBER" .) -}}
+        <div title='{{- T "section.archiveCounter" $.Pages.Len }} {{ T "section.totalWordCount" . }}' class="group-title-summary">
+          {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" $totalWordCount) -}}
+        </div>
+      {{- end -}}
+      {{- with $params.sectionSlot -}}
+        <p>{{ . | $.RenderString }}</p>
+      {{- end -}}
+
       {{- $pages := .Pages.GroupByDate "2006" -}}
       {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
         {{- $pages = $.Paginate $pages . -}}
@@ -140,11 +147,4 @@
     {{- /* Comment */ -}}
     {{- partial "single/comment.html" . -}}
   </div>
-
-  {{- /* component-projects.min.css */ -}}
-  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
-  {{- $options := dict "Source" "css/component-projects/index.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/component-projects.min.css" "enableSourceMap" true -}}
-  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
-  {{- partial "plugin/style.html" $options -}}
 {{- end -}}
