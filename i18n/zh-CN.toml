@@ -4,3 +4,6 @@
 
 [projects]
 relatedArticles = "相关文章"
+
+[projects.totalStarCount]
+other = "累计 {{ .Count }} stars"

@@ -3,3 +3,7 @@
 
 [projects]
 relatedArticles = "Related Articles"
+
+[projects.totalStarCount]
+one = "Total one star"
+other = "Total {{ .Count }} stars"

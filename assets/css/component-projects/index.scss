@@ -23,9 +23,13 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin: 0 0.5rem;
+
+    &:has(.total-stars) {
+      margin-top: 2rem;
+    }
   }
 
-  .group-title-summary {
+  .group-summary {
     display: inline;
     color: var(--color-muted);
     border-color: var(--bc-gh-repo-card);
@@ -37,9 +41,14 @@
     border-radius: 2em;
     padding: .25em 1em;
     white-space: nowrap;
-    transform: translateY(-40px);
     position: absolute;
     right: 0;
+    transform: translateY(-43px);
+
+    &.total-stars {
+      right: 8px;
+      transform: translateY(-26px);
+    }
   }
 
   #comments {
