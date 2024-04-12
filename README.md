@@ -2,9 +2,14 @@
 
 👉 English README | [简体中文说明](README.zh-cn.md)
 
-A Hugo theme component with layout `projects` and shortcodes to display GitHub card style pinned repositories.
+A Hugo theme component with layout `projects` and shortcodes to display GitHub pinned card style repositories.
 
 ![apple-devices-preview](https://github.com/hugo-fixit/component-projects/assets/33419593/3f75bd94-90df-4057-bee5-cbe2a61422f1)
+
+## Demo
+
+- <https://fixit.lruihao.cn/components/>
+- <https://lruihao.cn/projects/>
 
 ## Requirements
 
