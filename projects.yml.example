@@ -1,8 +1,10 @@
 - title: My developed
   description: Below are some open source works I have developed.
+  totalStars: false # whether to count total stars
   repos:
     - hugo-fixit/FixIt
 - title: My contributed
   description: Below are some open source works I have contributed to.
+  totalStars: false
   repos:
     - gohugoio/hugo

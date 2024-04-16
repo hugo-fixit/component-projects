@@ -18,15 +18,8 @@
     border-bottom: 1px solid #d0d7deb3;
   }
   
-  .gh-repo-card-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 0 0.5rem;
-
-    &:has(.total-stars) {
-      margin-top: 2rem;
-    }
+  .gh-repo-card-container:has(.total-stars) {
+    margin-top: 2rem;
   }
 
   .group-summary {

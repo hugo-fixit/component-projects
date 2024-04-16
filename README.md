@@ -75,7 +75,6 @@ Edit the front matter and content of the new page:
 title: My Projects
 titleIcon: fa-solid fa-laptop-code
 subtitle: <https://github.com/Lruihao>
-totalStars: false # whether to count total stars
 sectionSlot: Some text to display in the section slot which is above the related articles list.
 layout: projects
 ---
@@ -85,4 +84,11 @@ Some text to display at the start of the page.
 
 ### Shortcodes
 
-TODO
+Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to display a GitHub repository card:
+
+```markdown
+{{< gh-repo-card-container >}}
+  {{< gh-repo-card repo="hugo-fixit/component-projects" >}}
+  {{< gh-repo-card repo="Lruihao/hugo-blog" >}}
+{{< /gh-repo-card-container >}}
+```

@@ -1,0 +1,28 @@
+{{- $repo := (cond .IsNamedParams (.Get "repo") (.Get 0)) -}}
+{{- if not $repo -}}
+  {{- errorf "gh-repo-card shortcode: missing repo parameter" -}}
+{{- end -}}
+
+{{- $headers := dict "headers" (page.Scratch.Get "githubTokenHeader") -}}
+{{- $url := printf "https://api.github.com/repos/%v" $repo -}}
+{{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $headers ) -}}
+{{- $githubLangColors := .Scratch.Get "githubLangColors" -}}
+{{- if not $githubLangColors -}}
+  {{- $githubLangColors = partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
+  {{- .Scratch.Set "githubLangColors" $githubLangColors -}}
+{{- end -}}
+
+{{- if not $repoInfo -}}
+  {{- erroridf "error-get-gh-repo" "gh-repo-card shortcode: failed to fetch repo info from GitHub API" -}}
+{{- end -}}
+
+{{- if eq .Ordinal 0 -}}
+  {{- /* repo-card.min.css */ -}}
+  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+  {{- $options := dict "Source" "css/component-projects/repo-card.scss" "Fingerprint" $fingerprint -}}
+  {{- $toCSS := dict "targetPath" "css/repo-card.min.css" "enableSourceMap" true -}}
+  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
+  {{- partial "plugin/style.html" $options -}}
+{{- end -}}
+
+{{- dict "RepoInfo" $repoInfo "GithubLangColors" $githubLangColors | partial "plugin/gh-repo-card.html" -}}

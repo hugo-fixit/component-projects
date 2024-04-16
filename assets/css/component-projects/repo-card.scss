@@ -19,6 +19,13 @@
   }
 }
 
+.gh-repo-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0.5rem;
+}
+
 .gh-repo-card {
   box-sizing: border-box;
   flex-shrink: 0;
