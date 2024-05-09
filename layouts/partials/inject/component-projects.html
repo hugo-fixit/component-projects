@@ -1,0 +1,8 @@
+{{- /* repo-card.min.css */ -}}
+{{- if (.HasShortcode "gh-repo-card") | and (ne .Layout "projects") -}}
+  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+  {{- $options := dict "Source" "css/component-projects/repo-card.scss" "Fingerprint" $fingerprint -}}
+  {{- $toCSS := dict "targetPath" "css/repo-card.min.css" "enableSourceMap" true -}}
+  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
+  {{- partial "plugin/style.html" $options -}}
+{{- end -}}

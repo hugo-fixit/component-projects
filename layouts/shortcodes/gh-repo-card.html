@@ -16,13 +16,4 @@
   {{- erroridf "error-get-gh-repo" "gh-repo-card shortcode: failed to fetch repo info from GitHub API" -}}
 {{- end -}}
 
-{{- if eq .Ordinal 0 -}}
-  {{- /* repo-card.min.css */ -}}
-  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
-  {{- $options := dict "Source" "css/component-projects/repo-card.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/repo-card.min.css" "enableSourceMap" true -}}
-  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
-  {{- partial "plugin/style.html" $options -}}
-{{- end -}}
-
 {{- dict "RepoInfo" $repoInfo "GithubLangColors" $githubLangColors | partial "plugin/gh-repo-card.html" -}}

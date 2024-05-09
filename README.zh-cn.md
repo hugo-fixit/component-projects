@@ -13,7 +13,7 @@
 
 ## 要求
 
-- [FixIt](https://github.com/hugo-fixit) v0.3.5 或更高版本
+- [FixIt](https://github.com/hugo-fixit) v0.3.7 或更高版本
 
 ## 安装
 
@@ -28,6 +28,14 @@ git submodule add https://github.com/hugo-fixit/component-projects.git themes/co
 
 ```toml
 theme = ["FixIt", "component-projects"]
+```
+
+最后，在 `layouts/partials/custom.html` 中的 `custom-head` 或 `custom-assets` 块内注入主题组件的样式：
+
+```go-html-template
+{{- define "custom-assets" -}}
+  {{- partial "inject/component-projects.html" . -}}
+{{- end -}}
 ```
 
 要了解 Hugo 的主题组件以及如何使用它们，请查看 <https://gohugo.io/hugo-modules/theme-components/>。

@@ -37,6 +37,10 @@
   border-style: solid;
   border-width: var(--bw-gh-repo-card);
 
+  &.single:only-child {
+    margin: auto;
+  }
+
   svg {
     display: inline-block;
     overflow: visible !important;

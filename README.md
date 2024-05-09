@@ -13,7 +13,7 @@ A Hugo theme component with layout `projects` and shortcodes to display GitHub p
 
 ## Requirements
 
-- [FixIt](https://github.com/hugo-fixit) v0.3.5 or higher
+- [FixIt](https://github.com/hugo-fixit) v0.3.7 or higher
 
 ## Installation
 
@@ -28,6 +28,14 @@ Next edit `hugo.toml` of your project and add this theme component to your theme
 
 ```toml
 theme = ["FixIt", "component-projects"]
+```
+
+Finally, inject the theme component's assets in `layouts/partials/custom.html` within the `custom-head` or `custom-assets` block:
+
+```go-html-template
+{{- define "custom-assets" -}}
+  {{- partial "inject/component-projects.html" . -}}
+{{- end -}}
 ```
 
 To learn about theme components of hugo and how to use them, check out <https://gohugo.io/hugo-modules/theme-components/>.
