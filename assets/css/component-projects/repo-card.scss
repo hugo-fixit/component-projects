@@ -24,6 +24,12 @@
   flex-wrap: wrap;
   gap: 1rem;
   margin: 0.5rem;
+
+  &.single {
+    .gh-repo-card:only-child {
+      margin: auto;
+    }
+  }
 }
 
 .gh-repo-card {
@@ -36,10 +42,6 @@
   border-radius: var(--br-gh-repo-card);
   border-style: solid;
   border-width: var(--bw-gh-repo-card);
-
-  &.single:only-child {
-    margin: auto;
-  }
 
   svg {
     display: inline-block;
