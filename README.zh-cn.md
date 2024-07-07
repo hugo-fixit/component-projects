@@ -44,7 +44,7 @@ theme = ["FixIt", "component-projects"]
 
 获取仓库信息依赖 GitHub 官方 API。在开始使用之前，建议在 GitHub 上生成个人访问令牌，以防止 GitHub API 使用限制。
 
-1. 转到你的 GitHub 帐户设置，选择名为 `public_repo` 的范围以生成个人访问令牌。
+1. 点击跳到 GitHub [生成 token](https://github.com/settings/tokens/new)，选择名为 `public_repo` 的范围以生成个人访问令牌。
 2. 配置环境变量 `HUGO_PARAMS_GHTOKEN=your-person-access-token`，详细信息请参见 [os.Getenv | Hugo](https://gohugo.io/functions/os/getenv/#examples)
 
 ## 使用

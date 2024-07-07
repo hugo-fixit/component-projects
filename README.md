@@ -44,7 +44,7 @@ To learn about theme components of hugo and how to use them, check out <https://
 
 Obtaining repositories information relies on GitHub official API. Before starting to use it, it is recommended to generate personal access token on GitHub to prevent GitHub API usage limit.
 
-1. Go to your GitHub account settings, select the scope named `public_repo` to generate personal access token.
+1. Click to jump to GitHub [Generate token](https://github.com/settings/tokens/new), select the scope named `public_repo` to generate personal access token.
 2. Configure with environment variable `HUGO_PARAMS_GHTOKEN=your-person-access-token`, see details in [os.Getenv | Hugo](https://gohugo.io/functions/os/getenv/#examples)
 
 ## Usage
