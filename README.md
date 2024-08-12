@@ -89,3 +89,7 @@ Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to di
   {{< gh-repo-card repo="Lruihao/hugo-blog" >}}
 {{< /gh-repo-card-container >}}
 ```
+
+## 故障排除
+
+本地调试时，可以在 `hugo server` 命令后加上 `--ignoreCache` 参数以清除缓存。

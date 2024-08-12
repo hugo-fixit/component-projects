@@ -89,3 +89,7 @@ Some text to display at the start of the page.
   {{< gh-repo-card repo="Lruihao/hugo-blog" >}}
 {{< /gh-repo-card-container >}}
 ```
+
+## Troubleshooting
+
+You can add the `--ignoreCache` parameter to the `hugo server` command to clear the cache in local server.

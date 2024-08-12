@@ -3,6 +3,7 @@
 
 [projects]
 relatedArticles = "Related Articles"
+errorGetGhRepo = "failed to fetch repo info from GitHub API, Please check the network!"
 
 [projects.totalStarCount]
 one = "Total one star"

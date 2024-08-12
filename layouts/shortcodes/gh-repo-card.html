@@ -12,8 +12,4 @@
   {{- .Scratch.Set "githubLangColors" $githubLangColors -}}
 {{- end -}}
 
-{{- if not $repoInfo -}}
-  {{- erroridf "error-get-gh-repo" "gh-repo-card shortcode: failed to fetch repo info from GitHub API" -}}
-{{- end -}}
-
 {{- dict "RepoInfo" $repoInfo "GithubLangColors" $githubLangColors | partial "plugin/gh-repo-card.html" -}}
