@@ -17,6 +17,33 @@
 
 ## 安装
 
+安装方法与 [安装主题](https://fixit.lruihao.cn/documentation/installation/) 相同。有几种安装方法，请选择一种。
+
+### 安装为 Hugo 模块
+
+首先确保你的项目本身是一个 [Hugo 模块](https://gohugo.io/hugo-modules/use-modules/#initialize-a-new-module)。
+
+然后将此主题组件添加到你的 `hugo.toml` 配置文件中：
+
+```toml
+[module]
+  [[module.imports]]
+    path = "github.com/hugo-fixit/FixIt"
+  [[module.imports]]
+    path = "github.com/hugo-fixit/component-projects"
+```
+
+在第一次启动 Hugo 时，它将下载所需的文件。
+
+要更新到模块的最新版本，请运行：
+
+```bash
+hugo mod get -u
+hugo mod tidy
+```
+
+### 安装为 Git 子模块
+
 将 [FixIt](https://github.com/hugo-fixit) 和此 git 存储库克隆到你的主题文件夹中，并将其添加为网站目录的子模块。
 
 ```bash
@@ -30,6 +57,8 @@ git submodule add https://github.com/hugo-fixit/component-projects.git themes/co
 theme = ["FixIt", "component-projects"]
 ```
 
+## 注入 Partial
+
 最后，在 `layouts/partials/custom.html` 中的 `custom-head` 或 `custom-assets` 块内注入主题组件的样式：
 
 ```go-html-template
@@ -38,9 +67,7 @@ theme = ["FixIt", "component-projects"]
 {{- end -}}
 ```
 
-要了解 Hugo 的主题组件以及如何使用它们，请查看 <https://gohugo.io/hugo-modules/theme-components/>。
-
-## 配置
+## 配置（可选）
 
 获取仓库信息依赖 GitHub 官方 API。在开始使用之前，建议在 GitHub 上生成个人访问令牌，以防止 GitHub API 使用限制。
 
@@ -90,6 +117,48 @@ Some text to display at the start of the page.
 {{< /gh-repo-card-container >}}
 ```
 
-## Troubleshooting
+## 定时任务
 
-You can add the `--ignoreCache` parameter to the `hugo server` command to clear the cache in local server.
+由于采用服务端渲染，所有数据是在构建时获取的，而不会在每次访问时都请求 GitHub API。因此，我们可以使用定时任务来更新数据，从而保持其最新状态。
+
+### 部署到 GitHub Pages
+
+如果你的网站托管在 GitHub Pages 上，你可以使用 GitHub Actions 自动部署。
+
+```yaml
+name: Hugo build and deploy
+on:
+  schedule:
+    # Rebuid the site every day at 00:00 UTC to update the projects data
+    - cron: '0 0 * * *'
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  # Your build and deploy jobs here
+```
+
+### 部署到 Vercel
+
+如果你的网站托管在 Vercel 上，你可以使用 Vercel 的 [Deploy Hooks](https://vercel.com/docs/deployments/deploy-hooks#creating-&-triggering-deploy-hooks) 功能配合 GitHub Actions 自动部署。
+
+```yaml
+name: Vercel deploy hook
+on:
+  schedule:
+    # Rebuid the site every day at 00:00 UTC to update the projects data
+    - cron: '0 0 * * *'
+jobs:
+  Vercel-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        run: |
+          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
+```
+
+在 Vercel 的项目设置中，创建一个部署钩子，并在 GitHub 项目的 Secrets 中添加 `VERCEL_DEPLOY_HOOK` 变量。
+
+## 故障排除
+
+本地调试时，可以在 `hugo server` 命令后加上 `--ignoreCache` 参数以清除缓存。
