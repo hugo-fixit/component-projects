@@ -8,15 +8,15 @@
   --color-attention: #9a6700;
   --bc-attention: #bf8700;
   --url-color: #0969da;
+}
 
-  [data-theme='dark'] {
-    --bg-gh-repo-card: #22272e;
-    --bc-gh-repo-card: #444c56;
-    --color-muted: #717e8b;
-    --color-attention: #c69026;
-    --bc-attention: #966600;
-    --url-color: #478be6;
-  }
+[data-theme='dark'] {
+  --bg-gh-repo-card: #22272e;
+  --bc-gh-repo-card: #444c56;
+  --color-muted: #717e8b;
+  --color-attention: #c69026;
+  --bc-attention: #966600;
+  --url-color: #478be6;
 }
 
 .gh-repo-card-container {
