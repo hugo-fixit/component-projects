@@ -117,6 +117,16 @@ Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to di
 {{< /gh-repo-card-container >}}
 ```
 
+### Custom Blocks
+
+You can implement these blocks through `define`.
+
+| Block Name        | Description                                       |
+| :---------------- | :------------------------------------------------ |
+| `projects-aside`  | Displayed in the aside of the projects page       |
+| `projects-meta`   | Displayed in the post meta of the projects page   |
+| `projects-footer` | Displayed in the post footer of the projects page |
+
 ## Scheduled tasks
 
 Since it uses server-side rendering, all data is fetched at build time and not requested from the GitHub API on each visit. Therefore, we can use scheduled tasks to update the data to keep it up to date.

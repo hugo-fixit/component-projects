@@ -117,6 +117,16 @@ Some text to display at the start of the page.
 {{< /gh-repo-card-container >}}
 ```
 
+### 自定义块
+
+你可以通过 `define` 来实现这些块。
+
+| 块名称            | 描述                     |
+| :---------------- | :----------------------- |
+| `projects-aside`  | 显示在项目页面的侧边栏中 |
+| `projects-meta`   | 显示在项目页面的开始处   |
+| `projects-footer` | 显示在项目页面的底部处   |
+
 ## 定时任务
 
 由于采用服务端渲染，所有数据是在构建时获取的，而不会在每次访问时都请求 GitHub API。因此，我们可以使用定时任务来更新数据，从而保持其最新状态。

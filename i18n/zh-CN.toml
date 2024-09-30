@@ -5,6 +5,7 @@
 [projects]
 relatedArticles = "相关文章"
 errorGetGhRepo = "从 GitHub API 获取仓库信息失败，请检查网络！"
+poweredBy = "本页面由 <a href=\"https://github.com/hugo-fixit/component-projects\">Component Projects</a> 强力驱动。"
 
 [projects.totalStarCount]
 other = "累计 {{ .Count }} stars"

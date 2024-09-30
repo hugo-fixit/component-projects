@@ -4,6 +4,7 @@
 [projects]
 relatedArticles = "Related Articles"
 errorGetGhRepo = "failed to fetch repo info from GitHub API, Please check the network!"
+poweredBy = "This page is powered by <a href=\"https://github.com/hugo-fixit/component-projects\">Component Projects</a>."
 
 [projects.totalStarCount]
 one = "Total one star"

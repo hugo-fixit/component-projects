@@ -6,12 +6,21 @@
 {{- define "content" -}}
   {{- $params := partial "function/params.html" -}}
   {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+  {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
+  {{- $toc := .Scratch.Get "toc" -}}
+  {{- $hasToc := (gt (len .Fragments.Headings) 0) | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
+  {{- $showToc := $toc.enable | and $hasToc -}}
 
   {{- /* component-projects.min.css */ -}}
   {{- $options := dict "Source" "css/component-projects/index.scss" "Fingerprint" $fingerprint -}}
   {{- $toCSS := dict "targetPath" "css/component-projects.min.css" "enableSourceMap" true -}}
   {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
   {{- partial "plugin/style.html" $options -}}
+
+  <aside class="animate__animated animate__fadeIn animate__faster">
+    {{- /* Projects Aside */ -}}
+    {{- block "projects-aside" . }}{{ end -}}
+  </aside>
 
   <div class="page archive projects single">
     <div class="header">
@@ -25,11 +34,55 @@
       {{- /* Subtitle */ -}}
       {{- with $params.subtitle -}}<p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>{{- end -}}
     </div>
-    
+
+    {{- /* Meta */ -}}
+    <div class="post-meta">
+      {{- /* Projects Meta */ -}}
+      {{- block "projects-meta" . }}{{ end -}}
+    </div>
+
+    {{- /* Featured image */ -}}
+    {{- $image := $params.featuredimage -}}
+    {{- with .Resources.GetMatch "featured-image" -}}
+      {{- $image = .RelPermalink -}}
+    {{- end -}}
+    {{- with $image -}}
+      <div class="featured-image">
+        {{- dict "Src" . "Title" $.Description | partial "plugin/image.html" -}}
+      </div>
+    {{- end -}}
+
+    {{- /* Static TOC */ -}}
+    {{- if $showToc -}}
+      {{- $tableOfContents := .Fragments.ToHTML ($toc.startLevel | int) ($toc.endLevel | int) false -}}
+      {{- $tocFromData := "" -}}
+      {{- range $group := $data -}}
+        {{- if $group.title -}}
+          {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#%v\">%v</a></li>" ($group.title | anchorize) $group.title) -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
+      {{- with $tocFromData -}}
+        {{- if gt (len $.Fragments.Headings) 0 -}}
+          {{- $tableOfContents = replaceRE "</ul>" (printf "%v</ul>" .) $tableOfContents -}}
+        {{- else -}}
+          {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
+        {{- end -}}
+      {{- end -}}
+      <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepStatic }}true{{ else }}false{{ end }}">
+        <div class="details-summary toc-title">
+          <span>{{ T "single.contents" }}</span>
+          <span>{{ dict "Class" "details-icon fa-solid fa-angle-right" | partial "plugin/icon.html" }}</span>
+        </div>
+        <div class="details-content toc-content" id="toc-content-static">
+          {{- dict "Content" $tableOfContents "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+        </div>
+      </div>
+    {{- end -}}
+
     {{- /* Content */ -}}
     <div class="content" id="content">
       {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-      {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
       {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
       {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
       {{- range $group := $data -}}
@@ -113,7 +166,24 @@
       {{- partial "paginator.html" . -}}
     {{- end -}}
 
+    {{- /* Footer */ -}}
+    <div class="post-footer" id="post-footer">
+      {{- /* Projects Footer */ -}}
+      {{- block "projects-footer" . }}<div class="component-projects-powered">{{ (T "projects.poweredBy") | safeHTML }}</div>{{ end -}}
+    </div>
+
     {{- /* Comment */ -}}
     {{- partial "single/comment.html" . -}}
   </div>
+
+  <aside class="toc" id="toc-auto" aria-label="{{ T "single.contents" }}">
+    {{- /* Auto TOC */ -}}
+    {{- if $showToc -}}
+      <h2 class="toc-title{{ with $params.password }} encrypted-hidden{{ end }}">
+        {{- T "single.contents" -}}&nbsp;
+        {{- dict "Class" "toc-icon fa-solid fa-angle-down fa-fw" | partial "plugin/icon.html" -}}
+      </h2>
+      <div class="toc-content{{ if eq $toc.auto false }} always-active{{ end }}{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-content-auto"></div>
+    {{- end -}}
+  </aside>
 {{- end -}}
