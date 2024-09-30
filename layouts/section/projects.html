@@ -22,7 +22,7 @@
     {{- block "projects-aside" . }}{{ end -}}
   </aside>
 
-  <div class="page archive projects single">
+  <article class="page archive projects single">
     <div class="header">
       {{- /* Title */ -}}
       <h1 class="single-title animate__animated animate__pulse animate__faster">
@@ -174,7 +174,7 @@
 
     {{- /* Comment */ -}}
     {{- partial "single/comment.html" . -}}
-  </div>
+  </article>
 
   <aside class="toc" id="toc-auto" aria-label="{{ T "single.contents" }}">
     {{- /* Auto TOC */ -}}

@@ -1,0 +1,51 @@
+{{- $auth := dict "Authorization" "" -}}
+{{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
+  {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
+{{- end -}}
+{{- $headers := dict "headers" $auth -}}
+{{/*  TODO  */}}
+{{/*  {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}  */}}
+{{- $data := .Site.Data.projects -}}
+
+{{- range $group := $data -}}
+  {{- range $repo := $group.repos -}}
+    {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
+    {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers ) -}}
+    {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.md" $repo -}}
+    {{- $readme := partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers ) -}}
+
+    {{- if (not $repoInfo) | or (not $readme) -}}
+      {{- continue -}}
+    {{- end -}}
+
+    {{- /* Post dates from repo info */ -}}
+    {{- $dates := dict
+      "date" (time.AsTime $repoInfo.created_at)
+      "lastmod" (time.AsTime $repoInfo.updated_at)
+    -}}
+    {{- /* Post params from repo info */ -}}
+    {{- $params := dict
+      "categories" "GitHub"
+      "collections" (slice "project")
+      "tags" $repoInfo.topics
+      "lightgallery" true
+    -}}
+    {{- /* Post content from repo README */ -}}
+    {{- $postContent := add (printf "> From %s\n" $readme.html_url) ($readme.content | base64Decode) -}}
+    {{- $content := dict
+      "mediaType" "text/markdown"
+      "value" $postContent
+    -}}
+    {{- /* Create a post page */ -}}
+    {{- $page := dict
+      "title" $repoInfo.name
+      "path" $repoInfo.full_name 
+      "dates" $dates
+      "description" ($repoInfo.description | default "")
+      "content" $content
+      "params" $params
+      "type" "posts"
+    -}}
+    {{- $.AddPage $page -}}
+  {{- end -}}
+{{- end -}}
