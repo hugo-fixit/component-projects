@@ -1,0 +1,12 @@
+[params]
+  # Content adapters config for component projects
+  [params.projects_adapters]
+    enable = false
+    onlyPublic = true
+    categories = []
+    collections = []
+
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.132.0"

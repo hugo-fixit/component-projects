@@ -1,0 +1,68 @@
+{{- /*
+  * This template is used to create a post for each repo in the data file.
+  * You must copy it to your project to make it work.
+  * @author Lruihao (https://lruihao.cn)
+*/ -}}
+
+{{- $auth := dict "Authorization" "" -}}
+{{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
+  {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
+{{- end -}}
+{{- $headers := dict "headers" $auth -}}
+{{- $projectsAdapters := .Site.Params.projects_adapters -}}
+{{- $data := index .Site.Data (printf "projects.%v" .Site.Language.Lang) | default .Site.Data.projects -}}
+
+{{- /* Loop through the data and create a post for each repo */ -}}
+{{- range $group := $data -}}
+  {{- if not $projectsAdapters.enable -}}
+    {{- break -}}
+  {{- end -}}
+  {{- range $repo := $group.repos -}}
+    {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
+    {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers ) -}}
+    {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.md" $repo -}}
+    {{- $readme := partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers ) -}}
+
+    {{- /* Skip if the repo info or README is not available */ -}}
+    {{- if
+      (not $repoInfo) | or
+      (not $readme) | or
+      (and $projectsAdapters.onlyPublic (eq $repoInfo.visibility "private"))
+    -}}
+      {{- continue -}}
+    {{- end -}}
+
+    {{- /* Post dates from repo info */ -}}
+    {{- $dates := dict
+      "date" (time.AsTime $repoInfo.created_at)
+      "lastmod" (time.AsTime $repoInfo.updated_at)
+    -}}
+    {{- /* Post params from repo info (equivalent to the front matter of posts) */ -}}
+    {{- $params := dict
+      "categories" $projectsAdapters.categories
+      "collections" $projectsAdapters.collections
+      "tags" $repoInfo.topics
+      "lightgallery" true
+      "breadcrumb" (dict "capitalize" false)
+      "toc" (dict "ordered" false)
+    -}}
+    {{/* TODO FixIt 主题需要增加可自定义查看源码的 front matter, $readme.html_url  */}}
+    {{- /* Post content from repo README */ -}}
+    {{- $content := dict
+      "mediaType" "text/markdown"
+      "value" ($readme.content | base64Decode)
+    -}}
+    {{- /* Create a post page */ -}}
+    {{- $page := dict
+      "title" $repoInfo.description
+      "linkTitle" $repoInfo.full_name
+      "path" $repoInfo.full_name
+      "dates" $dates
+      "description" (printf "%s: %s" (replace $repoInfo.full_name "-" " ") $repoInfo.description)
+      "content" $content
+      "params" $params
+      "type" "posts"
+    -}}
+    {{- $.AddPage $page -}}
+  {{- end -}}
+{{- end -}}
