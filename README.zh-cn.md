@@ -1,6 +1,6 @@
 # component-projects
 
-👉 [English README](README.md) | 简体中文说明
+👉 [English README](/README.md) | 简体中文说明
 
 一个包含有 `projects` 布局和 shortcode 的 Hugo 主题组件，用于显示 GitHub 固定卡片样式存储库。
 
