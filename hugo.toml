@@ -2,9 +2,13 @@
   # Content adapters config for component projects
   [params.projects_adapters]
     enable = false
+    # Whether to show only public repos
     onlyPublic = true
+    # Default categories and collections
     categories = []
     collections = []
+    # Ignore repos in the ignore list
+    ignoreList = []
 
 [module]
   [module.hugoVersion]

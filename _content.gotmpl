@@ -14,10 +14,17 @@
 
 {{- /* Loop through the data and create a post for each repo */ -}}
 {{- range $group := $data -}}
-  {{- if not $projectsAdapters.enable -}}
+  {{- $groupContentAdapters := $group.contentAdapters | default false -}}
+  {{- $allowed := $projectsAdapters.enable | and $groupContentAdapters -}}
+  {{- if not $allowed -}}
     {{- break -}}
   {{- end -}}
   {{- range $repo := $group.repos -}}
+    {{- /* Ignore repos in the ignore list */ -}}
+    {{- if in $projectsAdapters.ignoreList $repo -}}
+      {{- continue -}}
+    {{- end -}}
+    {{- $projectsAdapters.ignoreList  -}}
     {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
     {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers ) -}}
     {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.md" $repo -}}
