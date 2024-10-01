@@ -1,6 +1,6 @@
 [params]
   # Content adapters config for component projects
-  [params.projects_adapters]
+  [params.projectsAdapters]
     enable = false
     # Whether to show only public repos
     onlyPublic = true

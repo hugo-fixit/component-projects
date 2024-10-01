@@ -10,7 +10,7 @@
   {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
 {{- end -}}
 {{- $headers := dict "headers" $auth -}}
-{{- $projectsAdapters := .Site.Params.projects_adapters -}}
+{{- $projectsAdapters := .Site.Params.projectsAdapters -}}
 {{- $data := index .Site.Data (printf "projects.%v" .Site.Language.Lang) | default .Site.Data.projects -}}
 
 {{- /* Loop through the data and create a post for each repo */ -}}

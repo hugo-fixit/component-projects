@@ -117,6 +117,33 @@ Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to di
 {{< /gh-repo-card-container >}}
 ```
 
+### Content Adapter
+
+:tada: This is a awesome feature! It can generate blog posts from the README of the repositories according to the projects data you configured.
+
+You can copy the [content adapter template](/_content.gotmpl) of this component to your project:
+
+```plain
+content/
+├── projects/
+│   ├── _content.gotmpl  <-- content adapter
+│   └── _index.md
+data/
+└── projects.yml         <-- project data
+```
+
+Then, open the `hugo.toml` file and configure the `projectsAdapters` option to enable the content adapter:
+
+```toml
+[params]
+  [params.projectsAdapters]
+    enable = true
+    onlyPublic = true
+    categories = []
+    collections = []
+    ignoreList = []
+```
+
 ### Custom Blocks
 
 You can implement these blocks through `define`.

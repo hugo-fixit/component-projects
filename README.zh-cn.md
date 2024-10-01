@@ -117,6 +117,33 @@ Some text to display at the start of the page.
 {{< /gh-repo-card-container >}}
 ```
 
+### 内容适配器
+
+:tada: 这是一个很棒的功能！它能够根据你配置的项目数据，把仓库的 README 自动生成博客文章。
+
+你可以复制本组件的 [内容适配器模板](/_content.gotmpl) 到你的项目中：
+
+```plain
+content/
+├── projects/
+│   ├── _content.gotmpl  <-- content adapter
+│   └── _index.md
+data/
+└── projects.yml         <-- project data
+```
+
+然后，打开 `hugo.toml` 文件，配置的 `projectsAdapters` 选项，启用内容适配器：
+
+```toml
+[params]
+  [params.projectsAdapters]
+    enable = true
+    onlyPublic = true
+    categories = []
+    collections = []
+    ignoreList = []
+```
+
 ### 自定义块
 
 你可以通过 `define` 来实现这些块。
