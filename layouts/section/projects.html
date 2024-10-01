@@ -8,7 +8,9 @@
   {{- $fingerprint := .Scratch.Get "fingerprint" -}}
   {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
   {{- $toc := .Scratch.Get "toc" -}}
-  {{- $hasToc := (gt (len .Fragments.Headings) 0) | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
+  {{- $tableOfContents := .Fragments.ToHTML ($toc.startLevel | int) ($toc.endLevel | int) false -}}
+  {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
+  {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
 
   {{- /* component-projects.min.css */ -}}
@@ -54,7 +56,6 @@
 
     {{- /* Static TOC */ -}}
     {{- if $showToc -}}
-      {{- $tableOfContents := .Fragments.ToHTML ($toc.startLevel | int) ($toc.endLevel | int) false -}}
       {{- $tocFromData := "" -}}
       {{- range $group := $data -}}
         {{- if $group.title -}}
@@ -63,8 +64,8 @@
       {{- end -}}
       {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
       {{- with $tocFromData -}}
-        {{- if gt (len $.Fragments.Headings) 0 -}}
-          {{- $tableOfContents = replaceRE "</ul>" (printf "%v</ul>" .) $tableOfContents -}}
+        {{- if $contentToc -}}
+          {{- $tableOfContents = replaceRE "</ul>[\\s]?</nav>" (printf "%v</ul></nav>" .) $tableOfContents -}}
         {{- else -}}
           {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
         {{- end -}}
