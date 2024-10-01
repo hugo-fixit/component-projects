@@ -14,8 +14,7 @@
 
 {{- /* Loop through the data and create a post for each repo */ -}}
 {{- range $group := $data -}}
-  {{- $groupContentAdapters := $group.contentAdapters | default false -}}
-  {{- $allowed := $projectsAdapters.enable | and $groupContentAdapters -}}
+  {{- $allowed := $projectsAdapters.enable | and (ne $group.contentAdapters false) -}}
   {{- if not $allowed -}}
     {{- break -}}
   {{- end -}}
@@ -46,18 +45,27 @@
     -}}
     {{- /* Post params from repo info (equivalent to the front matter of posts) */ -}}
     {{- $params := dict
+      "fromAdapters" "projects"
       "categories" $projectsAdapters.categories
       "collections" $projectsAdapters.collections
       "tags" $repoInfo.topics
       "lightgallery" true
       "breadcrumb" (dict "capitalize" false)
       "toc" (dict "ordered" false)
+      "subtitle" ($repoInfo.homepage | default $repoInfo.html_url)
     -}}
     {{/* TODO FixIt 主题需要增加可自定义查看源码的 front matter, $readme.html_url  */}}
     {{- /* Post content from repo README */ -}}
+    {{- $markdown := $readme.content | base64Decode -}}
+    {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
+    {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
+    {{- /* Convert relative links to absolute links in the README content */ -}}
+    {{- $replacement := printf "$1[$2](%v$4)" (printf "https://raw.githubusercontent.com/%v/refs/heads/%v/$3" $repoInfo.full_name $repoInfo.default_branch) -}}
+    {{- /* Oops! Lookahead regular lookup is not supported in Golang, e.g `(?!http)` */ -}}
+    {{- $markdown = replaceRE `([!]?)\[(.*?)\]\((/.*).*?(\s+".*?")?\)` $replacement $markdown -}}
     {{- $content := dict
       "mediaType" "text/markdown"
-      "value" ($readme.content | base64Decode)
+      "value" $markdown
     -}}
     {{- /* Create a post page */ -}}
     {{- $page := dict
