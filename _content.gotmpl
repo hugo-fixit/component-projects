@@ -30,22 +30,20 @@
     {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Lang -}}
     {{- $readme := partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers ) -}}
 
+    {{- /* Get the default README if the multi-language README is not available */ -}}
+    {{- if not $readme -}}
+      {{- $readmeAPI = printf "https://api.github.com/repos/%v/contents/README.md" $repo -}}
+      {{- $readme = partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers ) -}}
+    {{- end -}}
+
     {{- /* Skip if the repo info or README is not available */ -}}
     {{- if
       (not $repoInfo) | or
       (not $readme) | or
       (and $projectsAdapters.onlyPublic (eq $repoInfo.visibility "private"))
     -}}
+      {{- warnidf "warning-projects-adapter" "Repo %v is not available or is private." $repo -}}
       {{- continue -}}
-    {{- end -}}
-
-    {{- /* Get the default README if the multi-language README is not available */ -}}
-    {{- if eq $readme.status "404" -}}
-      {{- $readmeAPI = printf "https://api.github.com/repos/%v/readme" $repo -}}
-      {{- $readme = partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers ) -}}
-      {{- if not $readme -}}
-        {{- continue -}}
-      {{- end -}}
     {{- end -}}
 
     {{- /* Post dates from repo info */ -}}
