@@ -1,6 +1,7 @@
 {{- /*
   * This template is used to create a post for each repo in the data file.
   * You must copy it to your project to make it work.
+  * TODO support multiple languages
   * @author Lruihao (https://lruihao.cn)
 */ -}}
 
@@ -53,8 +54,10 @@
       "breadcrumb" (dict "capitalize" false)
       "toc" (dict "ordered" false)
       "subtitle" ($repoInfo.homepage | default $repoInfo.html_url)
+      "sourceURL" (add $readme.html_url "?plain=1")
+      "editURL" (replace $readme.html_url "/blob/" "/edit/" )
+      "LinkToReport" false
     -}}
-    {{/* TODO FixIt 主题需要增加可自定义查看源码的 front matter, $readme.html_url  */}}
     {{- /* Post content from repo README */ -}}
     {{- $markdown := $readme.content | base64Decode -}}
     {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
