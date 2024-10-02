@@ -8,7 +8,7 @@
   {{- $fingerprint := .Scratch.Get "fingerprint" -}}
   {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
   {{- $toc := .Scratch.Get "toc" -}}
-  {{- $tableOfContents := .Fragments.ToHTML ($toc.startLevel | int) ($toc.endLevel | int) false -}}
+  {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
@@ -70,7 +70,7 @@
           {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
         {{- end -}}
       {{- end -}}
-      <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepStatic }}true{{ else }}false{{ end }}">
+      <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepstatic }}true{{ else }}false{{ end }}">
         <div class="details-summary toc-title">
           <span>{{ T "single.contents" }}</span>
           <span>{{ dict "Class" "details-icon fa-solid fa-angle-right" | partial "plugin/icon.html" }}</span>
