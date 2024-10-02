@@ -129,7 +129,7 @@ content/
 │   ├── _content.gotmpl  <-- content adapter
 │   └── _index.md
 data/
-└── projects.yml         <-- project data
+└── projects.yml         <-- projects data
 ```
 
 然后，打开 `hugo.toml` 文件，配置的 `projectsAdapters` 选项，启用内容适配器：

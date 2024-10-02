@@ -129,7 +129,7 @@ content/
 │   ├── _content.gotmpl  <-- content adapter
 │   └── _index.md
 data/
-└── projects.yml         <-- project data
+└── projects.yml         <-- projects data
 ```
 
 Then, open the `hugo.toml` file and configure the `projectsAdapters` option to enable the content adapter:

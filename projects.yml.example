@@ -1,12 +1,20 @@
 - title: My developed
   description: Below are some open source works I have developed.
   contentAdapters: false
+  categories:
+    - foo
+  collections:
+    - developed
   totalStars: false # whether to count total stars
   repos:
     - hugo-fixit/FixIt
 - title: My contributed
   description: Below are some open source works I have contributed to.
   contentAdapters: false
+  categories:
+    - bar
+  collections:
+    - contributed
   totalStars: false
   repos:
     - gohugoio/hugo
