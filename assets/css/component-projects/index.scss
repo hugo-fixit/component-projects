@@ -6,10 +6,6 @@
     margin-block: 0 0.5rem;
     font-size: 1rem;
   }
-  
-  .gh-repo-card-container:has(.total-stars) {
-    margin-top: 2rem;
-  }
 
   .group-summary {
     display: inline;
@@ -17,6 +13,7 @@
     border-color: var(--bc-gh-repo-card);
     border-style: solid;
     border-width: var(--bw-gh-repo-card);
+    background-color: var(--bg-gh-repo-card);
     font-size: 0.75rem;
     font-weight: 500;
     line-height: 14px;
@@ -24,13 +21,8 @@
     padding: .25em 1em;
     white-space: nowrap;
     position: absolute;
-    right: 0;
-    transform: translateY(-43px);
-
-    &.total-stars {
-      right: 8px;
-      transform: translateY(-26px);
-    }
+    right: 8px;
+    transform: translateY(-27.5px);
   }
 
   .component-projects-powered {
