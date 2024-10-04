@@ -3,7 +3,9 @@
 
 [projects]
 relatedArticles = "Related Articles"
-errorGetGhRepo = "failed to fetch repo info from GitHub API, Please check the network!"
+errorGetGhRepo = "Failed to fetch repo info from GitHub API, Please check the network!"
+warningLayout = "The page {{ .Permalink }} is getting repositories via network, please wait a moment..."
+warningAdapter = "The content adapter is getting GitHub README via network, please wait a moment..."
 source = "Source: [{{ .Name }}]({{ .Link }}){{ with .Website }}<br>Website: <{{ . }}>{{ end }}"
 poweredBy = "This page is powered by <a href=\"https://github.com/hugo-fixit/component-projects\">Component Projects</a>."
 

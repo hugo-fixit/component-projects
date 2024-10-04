@@ -46,5 +46,5 @@
     </div>
   </div>
 {{- else -}}
-  {{- erroridf "error-get-gh-repo" (printf "[component-projects]: %v" (T "projects.errorGetGhRepo")) -}}
+  {{- erroridf "error-get-gh-repo" "component-projects\n%v" (T "projects.errorGetGhRepo") -}}
 {{- end -}}

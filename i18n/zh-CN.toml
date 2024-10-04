@@ -5,6 +5,8 @@
 [projects]
 relatedArticles = "相关文章"
 errorGetGhRepo = "从 GitHub API 获取仓库信息失败，请检查网络！"
+warningLayout = "{{ .Permalink }} 页面正在通过网络获取仓库，请稍等片刻……"
+warningAdapter = "内容适配器正在通过网络获取 GitHub README，请稍等片刻……"
 source = "来源：[{{ .Name }}]({{ .Link }}){{ with .Website }}<br>网站：<{{ . }}>{{ end }}"
 poweredBy = "本页面由 <a href=\"https://github.com/hugo-fixit/component-projects\">Component Projects</a> 强力驱动。"
 
