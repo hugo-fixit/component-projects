@@ -127,6 +127,8 @@ Some text to display at the start of the page.
 {{- partial "adapters/projects.html" . -}}
 ```
 
+目录结构如下：
+
 ```plain
 content/
 ├── projects/

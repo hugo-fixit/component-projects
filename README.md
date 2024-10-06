@@ -127,6 +127,8 @@ Create `_content.gotmpl` in projects section folder, add the following code:
 {{- partial "adapters/projects.html" . -}}
 ```
 
+Directory structure:
+
 ```plain
 content/
 ├── projects/

@@ -18,17 +18,18 @@
   * @author Lruihao (https://lruihao.cn)
 */ -}}
 
-{{- $auth := dict "Authorization" "" -}}
-{{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
-  {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
-{{- end -}}
-{{- $headers := dict "headers" $auth -}}
 {{- $projectsAdapters := .Site.Params.projectsAdapters -}}
-{{- $data := index .Site.Data (printf "projects.%v" .Site.Language.Lang) | default .Site.Data.projects -}}
-{{- $renderedRepos := slice -}}
 
 {{- if $projectsAdapters.enable -}}
   {{- warnf "component-projects\n%v" (T "projects.warningAdapter") -}}
+  {{- $data := index .Site.Data (printf "projects.%v" .Site.Language.Lang) | default .Site.Data.projects -}}
+  {{- $renderedRepos := slice -}}
+  {{- $auth := dict "Authorization" "" -}}
+  {{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
+    {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
+  {{- end -}}
+  {{- $headers := dict "headers" $auth -}}
+
   {{- /* Loop through the data and create a post for each repo */ -}}
   {{- range $group := $data -}}
     {{- if eq $group.contentAdapters false -}}
