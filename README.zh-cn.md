@@ -121,13 +121,17 @@ Some text to display at the start of the page.
 
 :tada: 这是一个很棒的功能！它能够根据你配置的项目数据，把仓库的 README 自动生成博客文章。
 
-你可以复制本组件的 [内容适配器模板](/_content.gotmpl) 到你的项目中：
+在项目文件夹中创建 `_content.gotmpl`，添加以下代码：
+
+```go-html-template
+{{- partial "adapters/projects.html" . -}}
+```
 
 ```plain
 content/
 ├── projects/
 │   ├── _content.gotmpl  <-- content adapter
-│   └── _index.md
+│   └── _index.md        <-- layout: projects
 data/
 └── projects.yml         <-- projects data
 ```

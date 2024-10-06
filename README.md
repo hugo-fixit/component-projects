@@ -121,13 +121,17 @@ Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to di
 
 :tada: This is a awesome feature! It can generate blog posts from the README of the repositories according to the projects data you configured.
 
-You can copy the [content adapter template](/_content.gotmpl) of this component to your project:
+Create `_content.gotmpl` in projects section folder, add the following code:
+
+```go-html-template
+{{- partial "adapters/projects.html" . -}}
+```
 
 ```plain
 content/
 ├── projects/
 │   ├── _content.gotmpl  <-- content adapter
-│   └── _index.md
+│   └── _index.md        <-- layout: projects
 data/
 └── projects.yml         <-- projects data
 ```
