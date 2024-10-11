@@ -12,6 +12,16 @@
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
+  {{- /* Paginate before content */ -}}
+  {{- $pages := .Pages -}}
+  {{- if $pages -}}
+    {{- $pages = .Pages.GroupByDate "2006" -}}
+    {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
+      {{- $pages = $.Paginate $pages 4 -}}
+    {{- else -}}
+      {{- $pages = .Paginate $pages -}}
+    {{- end -}}
+  {{- end -}}
 
   {{- /* component-projects.min.css */ -}}
   {{- $options := dict "Source" "css/component-projects/index.scss" "Fingerprint" $fingerprint -}}
@@ -43,114 +53,111 @@
       {{- block "projects-meta" . }}{{ end -}}
     </div>
 
-    {{- /* Featured image */ -}}
-    {{- $image := $params.featuredimage -}}
-    {{- with .Resources.GetMatch "featured-image" -}}
-      {{- $image = .RelPermalink -}}
-    {{- end -}}
-    {{- with $image -}}
-      <div class="featured-image">
-        {{- dict "Src" . "Title" $.Description | partial "plugin/image.html" -}}
+    {{- if eq $.Paginator.PageNumber 1 -}}
+      {{- /* Featured image */ -}}
+      {{- $image := $params.featuredimage -}}
+      {{- with .Resources.GetMatch "featured-image" -}}
+        {{- $image = .RelPermalink -}}
+      {{- end -}}
+      {{- with $image -}}
+        <div class="featured-image">
+          {{- dict "Src" . "Title" $.Description | partial "plugin/image.html" -}}
+        </div>
+      {{- end -}}
+
+      {{- /* Static TOC */ -}}
+      {{- if $showToc -}}
+        {{- $tocFromData := "" -}}
+        {{- range $group := $data -}}
+          {{- if $group.title -}}
+            {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#%v\">%v</a></li>" ($group.title | anchorize) $group.title) -}}
+          {{- end -}}
+        {{- end -}}
+        {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
+        {{- with $tocFromData -}}
+          {{- if $contentToc -}}
+            {{- $tableOfContents = replaceRE "</ul>[\\s]?</nav>" (printf "%v</ul></nav>" .) $tableOfContents -}}
+          {{- else -}}
+            {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
+          {{- end -}}
+        {{- end -}}
+        <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepstatic }}true{{ else }}false{{ end }}">
+          <div class="details-summary toc-title">
+            <span>{{ T "single.contents" }}</span>
+            <span>{{ dict "Class" "details-icon fa-solid fa-angle-right" | partial "plugin/icon.html" }}</span>
+          </div>
+          <div class="details-content toc-content" id="toc-content-static">
+            {{- dict "Content" $tableOfContents "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+          </div>
+        </div>
+      {{- end -}}
+
+      {{- /* Content */ -}}
+      <div class="content" id="content">
+        {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+        {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "Permalink" .Permalink)) -}}
+        {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
+        {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
+        {{- range $group := $data -}}
+          <h2 id="{{ $group.title | anchorize }}" class="heading-element">
+            <span>{{ $group.title }}</span>
+            <a href="#{{ $group.title | anchorize }}" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
+          </h2>
+          {{- $totalStarCount := 0 -}}
+          {{- $repoInfoArr := slice -}}
+          {{- range $repo := $group.repos -}}
+            {{- $url := printf "https://api.github.com/repos/%v" $repo -}}
+            {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $headers ) -}}
+            {{- if not $repoInfo -}}
+              {{- continue -}}
+            {{- end -}}
+            {{- with $repoInfo.stargazers_count -}}
+              {{- $totalStarCount = add $totalStarCount . -}}
+            {{- end -}}
+            {{- $repoInfoArr = $repoInfoArr | append $repoInfo -}}
+          {{- end -}}
+          {{- /* Total star count */ -}}
+          {{- if $group.totalStars -}}
+            <div title="{{ T `projects.totalStarCount` (dict `Count` $totalStarCount) }}" class="group-summary total-stars">
+              {{- T "projects.totalStarCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" $totalStarCount))) -}}
+            </div>
+          {{- end -}}
+          {{- with $group.description -}}
+            <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
+          {{- end -}}
+          {{- /* Repo cards */ -}}
+          <div class="gh-repo-card-container">
+            {{- range $repoInfo := $repoInfoArr -}}
+              {{- dict "RepoInfo" $repoInfo "GithubLangColors" $githubLangColors | partial "plugin/gh-repo-card.html" -}}
+            {{- end -}}
+          </div>
+        {{- end -}}
+        <hr class="awesome-hr">
+        {{- if .Pages -}}
+          <h2 id="related-articles" class="heading-element">
+            <span>{{ T "projects.relatedArticles" }}</span>
+            <a href="#related-articles" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
+          </h2>
+          {{- /* Total page and word count */ -}}
+          {{- $localData := newScratch -}}
+          {{- range .Pages -}}
+            {{- $localData.Add "totalWordCount" .WordCount -}}
+          {{- end -}}
+          {{- with ($localData.Get "totalWordCount") -}}
+            <div title="{{- T `section.archiveCounter` $.Pages.Len }} {{ T `section.totalWordCount` . }}" class="group-summary">
+              {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
+            </div>
+          {{- end -}}
+          {{- with $params.sectionSlot -}}
+            <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
+          {{- end -}}
+        {{- end -}}
       </div>
     {{- end -}}
 
-    {{- /* Static TOC */ -}}
-    {{- if $showToc -}}
-      {{- $tocFromData := "" -}}
-      {{- range $group := $data -}}
-        {{- if $group.title -}}
-          {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#%v\">%v</a></li>" ($group.title | anchorize) $group.title) -}}
-        {{- end -}}
-      {{- end -}}
-      {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
-      {{- with $tocFromData -}}
-        {{- if $contentToc -}}
-          {{- $tableOfContents = replaceRE "</ul>[\\s]?</nav>" (printf "%v</ul></nav>" .) $tableOfContents -}}
-        {{- else -}}
-          {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
-        {{- end -}}
-      {{- end -}}
-      <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepstatic }}true{{ else }}false{{ end }}">
-        <div class="details-summary toc-title">
-          <span>{{ T "single.contents" }}</span>
-          <span>{{ dict "Class" "details-icon fa-solid fa-angle-right" | partial "plugin/icon.html" }}</span>
-        </div>
-        <div class="details-content toc-content" id="toc-content-static">
-          {{- dict "Content" $tableOfContents "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-        </div>
-      </div>
-    {{- end -}}
-
-    {{- /* Content */ -}}
-    <div class="content" id="content">
-      {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-      {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "Permalink" .Permalink)) -}}
-      {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
-      {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
-      {{- range $group := $data -}}
-        <h2 id="{{ $group.title | anchorize }}" class="heading-element">
-          <span>{{ $group.title }}</span>
-          <a href="#{{ $group.title | anchorize }}" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
-        </h2>
-        {{- $totalStarCount := 0 -}}
-        {{- $repoInfoArr := slice -}}
-        {{- range $repo := $group.repos -}}
-          {{- $url := printf "https://api.github.com/repos/%v" $repo -}}
-          {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $headers ) -}}
-          {{- if not $repoInfo -}}
-            {{- continue -}}
-          {{- end -}}
-          {{- with $repoInfo.stargazers_count -}}
-            {{- $totalStarCount = add $totalStarCount . -}}
-          {{- end -}}
-          {{- $repoInfoArr = $repoInfoArr | append $repoInfo -}}
-        {{- end -}}
-        {{- /* Total star count */ -}}
-        {{- if $group.totalStars -}}
-          <div title="{{ T `projects.totalStarCount` (dict `Count` $totalStarCount) }}" class="group-summary total-stars">
-            {{- T "projects.totalStarCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" $totalStarCount))) -}}
-          </div>
-        {{- end -}}
-        {{- with $group.description -}}
-          <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
-        {{- end -}}
-        {{- /* Repo cards */ -}}
-        <div class="gh-repo-card-container">
-          {{- range $repoInfo := $repoInfoArr -}}
-            {{- dict "RepoInfo" $repoInfo "GithubLangColors" $githubLangColors | partial "plugin/gh-repo-card.html" -}}
-          {{- end -}}
-        </div>
-      {{- end -}}
-      <hr class="awesome-hr">
-      {{- if .Pages -}}
-        <h2 id="related-articles" class="heading-element">
-          <span>{{ T "projects.relatedArticles" }}</span>
-          <a href="#related-articles" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
-        </h2>
-        {{- /* Total page and word count */ -}}
-        {{- $localData := newScratch -}}
-        {{- range .Pages -}}
-          {{- $localData.Add "totalWordCount" .WordCount -}}
-        {{- end -}}
-        {{- with ($localData.Get "totalWordCount") -}}
-          <div title="{{- T `section.archiveCounter` $.Pages.Len }} {{ T `section.totalWordCount` . }}" class="group-summary">
-            {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
-          </div>
-        {{- end -}}
-        {{- with $params.sectionSlot -}}
-          <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
-        {{- end -}}
-      {{- end -}}
-    </div>
-
-    {{- /* Paginate */ -}}
-    {{- if .Pages -}}
-      {{- $pages := .Pages.GroupByDate "2006" -}}
-      {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
-        {{- $pages = $.Paginate $pages . -}}
-      {{- else -}}
-        {{- $pages = .Paginate $pages -}}
-      {{- end -}}
+    {{- /* Paginator render */ -}}
+    {{- if $pages -}}
+      {{- partial "recently-updated.html" . -}}
       {{- range $pages.PageGroups -}}
         <h3 class="group-title">
           {{- dict "Class" "fa-regular fa-calendar fa-fw me-1" | partial "plugin/icon.html" -}}
@@ -174,14 +181,16 @@
       {{- partial "paginator.html" . -}}
     {{- end -}}
 
-    {{- /* Footer */ -}}
-    <div class="post-footer" id="post-footer">
-      {{- /* Projects Footer */ -}}
-      {{- block "projects-footer" . }}<div class="component-projects-powered">{{ (T "projects.poweredBy") | safeHTML }}</div>{{ end -}}
-    </div>
+    {{- if eq $.Paginator.PageNumber 1 -}}
+      {{- /* Footer */ -}}
+      <div class="post-footer" id="post-footer">
+        {{- /* Projects Footer */ -}}
+        {{- block "projects-footer" . }}<div class="component-projects-powered">{{ (T "projects.poweredBy") | safeHTML }}</div>{{ end -}}
+      </div>
 
-    {{- /* Comment */ -}}
-    {{- partial "single/comment.html" . -}}
+      {{- /* Comment */ -}}
+      {{- partial "single/comment.html" . -}}
+    {{- end -}}
   </article>
 
   <aside class="toc" id="toc-auto" aria-label="{{ T "single.contents" }}">
