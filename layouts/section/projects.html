@@ -73,7 +73,9 @@
             {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#%v\">%v</a></li>" ($group.title | anchorize) $group.title) -}}
           {{- end -}}
         {{- end -}}
-        {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
+        {{- if .Pages -}}
+          {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
+        {{- end -}}
         {{- with $tocFromData -}}
           {{- if $contentToc -}}
             {{- $tableOfContents = replaceRE "</ul>[\\s]?</nav>" (printf "%v</ul></nav>" .) $tableOfContents -}}
@@ -95,7 +97,7 @@
       {{- /* Content */ -}}
       <div class="content" id="content">
         {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-        {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "Permalink" .Permalink)) -}}
+        {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "RelPermalink" .RelPermalink)) -}}
         {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
         {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
         {{- range $group := $data -}}

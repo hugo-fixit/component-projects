@@ -8,7 +8,7 @@ A Hugo theme component with layout `projects` and shortcodes to display GitHub p
 
 ## Demo
 
-- <https://fixit.lruihao.cn/components/>
+- <https://fixit.lruihao.cn/ecosystem/>
 - <https://lruihao.cn/projects/>
 
 ## Requirements

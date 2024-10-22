@@ -8,7 +8,7 @@
 
 ## Demo
 
-- <https://fixit.lruihao.cn/zh-cn/components/>
+- <https://fixit.lruihao.cn/zh-cn/ecosystem/>
 - <https://lruihao.cn/projects/>
 
 ## 要求
