@@ -148,6 +148,9 @@ data/
     categories = []
     collections = []
     ignoreList = []
+    [params.projectsAdapters.params]
+      hiddenFromHomePage = true
+      # more font matter here ...
 ```
 
 ### 自定义块

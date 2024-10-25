@@ -1,6 +1,8 @@
 - title: My developed
   description: Below are some open source works I have developed.
   contentAdapters: false
+  params:
+    hiddenFromHomePage: true
   categories:
     - foo
   collections:
@@ -11,6 +13,8 @@
 - title: My contributed
   description: Below are some open source works I have contributed to.
   contentAdapters: false
+  params:
+    hiddenFromHomePage: true
   categories:
     - bar
   collections:

@@ -9,6 +9,9 @@
     collections = []
     # Ignore repos in the ignore list
     ignoreList = []
+    [params.projectsAdapters.params]
+      hiddenFromHomePage = true
+      # more font matter here ...
 
 [module]
   [module.hugoVersion]

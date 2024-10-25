@@ -96,6 +96,9 @@
         "editURL" (replace $readme.html_url "/blob/" "/edit/" )
         "LinkToReport" false
       -}}
+      {{- $groupParams := $group.params | default dict -}}
+      {{- $configParams := $projectsAdapters.params | default dict -}}
+      {{- $params = $groupParams | merge $configParams | merge $params -}}
       {{- /* Post content from repo README */ -}}
       {{- $markdown := $readme.content | base64Decode -}}
       {{- /* Convert Hugo shortcodes to markdown plain text */ -}}

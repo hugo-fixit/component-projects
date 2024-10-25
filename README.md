@@ -148,6 +148,9 @@ Then, open the `hugo.toml` file and configure the `projectsAdapters` option to e
     categories = []
     collections = []
     ignoreList = []
+    [params.projectsAdapters.params]
+      hiddenFromHomePage = true
+      # more font matter here ...
 ```
 
 ### Custom Blocks
