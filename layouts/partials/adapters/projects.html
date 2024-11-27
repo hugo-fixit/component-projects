@@ -104,9 +104,11 @@
       {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
       {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
       {{- /* Convert relative links to absolute links in the README content */ -}}
-      {{- $replacement := printf "$1[$2](%v$4)" (printf "https://raw.githubusercontent.com/%v/refs/heads/%v/$3" $repoInfo.full_name $repoInfo.default_branch) -}}
+      {{- $replacement := printf "$1[$2](%v$3$4)" (printf "https://raw.githubusercontent.com/%v/refs/heads/%v" $repoInfo.full_name $repoInfo.default_branch) -}}
       {{- /* Oops! Lookahead regular lookup is not supported in Golang, e.g `(?!http)` */ -}}
       {{- $markdown = replaceRE `([!]?)\[(.*?)\]\(([/|\./].*).*?(\s+".*?")?\)` $replacement $markdown -}}
+      {{- $replacement = printf `<a$1 href="%v$2"$3>$4</a>` (printf "https://raw.githubusercontent.com/%v/refs/heads/%v" $repoInfo.full_name $repoInfo.default_branch) -}}
+      {{- $markdown = replaceRE `<a(.*?) href="([/|\./].*).*?"(.*?)>(.*?)</a>` $replacement $markdown -}}
       {{- $content := dict
         "mediaType" "text/markdown"
         "value" $markdown
