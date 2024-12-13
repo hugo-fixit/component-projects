@@ -1,4 +1,4 @@
-{{- $repo := (cond .IsNamedParams (.Get "repo") (.Get 0)) -}}
+{{- $repo := cond .IsNamedParams (.Get "repo") (.Get 0) -}}
 {{- if not $repo -}}
   {{- errorf "gh-repo-card shortcode: missing repo parameter" -}}
 {{- end -}}
