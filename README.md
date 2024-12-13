@@ -1,29 +1,45 @@
-# component-projects
-
-👉 English README | [简体中文说明](/README.zh-cn.md)
-
-A Hugo theme component with layout `projects` and shortcodes to display GitHub pinned card style repositories.
+<!-- markdownlint-disable-file MD033 MD041 -->
+<h1 align="center">GitHub Projects Embed | FixIt</h1>
 
 ![apple-devices-preview](https://github.com/hugo-fixit/component-projects/assets/33419593/3f75bd94-90df-4057-bee5-cbe2a61422f1)
 
+<div align="center" class="ignore">
+  <p>在 FixIt 主题中展示你的 GitHub 项目并根据 README 自动生成博客文章。</p>
+  简体中文 |
+  <a href="https://fixit.lruihao.cn/zh-cn/ecosystem/hugo-fixit/component-projects/?lang=chinese_traditional">繁體中文</a> |
+  <a href="/README.en.md">English</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=french">Français</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=russian">Русский язык</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=spanish">Español</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=hindi">हिन्दी</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=german">deutsch</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=korean">한국어</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=japanese">しろうと</a>
+</div>
+
 ## Demo
 
-- <https://fixit.lruihao.cn/ecosystem/>
-- <https://lruihao.cn/projects/>
+- [生态系统 | FixIt](https://fixit.lruihao.cn/zh-cn/ecosystem/)
+- [Lruihao 的开源项目](https://lruihao.cn/projects/)
 
-## Requirements
+## 特性
 
-- [FixIt](https://github.com/hugo-fixit) v0.3.7 or higher
+- 支持 GitHub 项目卡片展示（`layout` 或者 `shortcodes`）
+- 支持根据 README 自动生成博客文章（`content adapter`）
 
-## Installation
+## 要求
 
-The installation method is the same as [installing a theme](https://fixit.lruihao.cn/documentation/installation/). There are several ways to install, choose one.
+- [FixIt](https://github.com/hugo-fixit) v0.3.7 或更高版本
 
-### Install as Hugo Module
+## 安装
 
-First make sure that your project itself is a [Hugo module](https://gohugo.io/hugo-modules/use-modules/#initialize-a-new-module).
+安装方法与 [安装主题](https://fixit.lruihao.cn/documentation/installation/) 相同。有几种安装方法，请选择一种。
 
-Then add this theme component to your `hugo.toml` configuration file:
+### 安装为 Hugo 模块
+
+首先确保你的项目本身是一个 [Hugo 模块](https://gohugo.io/hugo-modules/use-modules/#initialize-a-new-module)。
+
+然后将此主题组件添加到你的 `hugo.toml` 配置文件中：
 
 ```toml
 [module]
@@ -33,33 +49,33 @@ Then add this theme component to your `hugo.toml` configuration file:
     path = "github.com/hugo-fixit/component-projects"
 ```
 
-On the first start of Hugo it will download the required files.
+在第一次启动 Hugo 时，它将下载所需的文件。
 
-To update to the latest version of the module run:
+要更新到模块的最新版本，请运行：
 
 ```bash
 hugo mod get -u
 hugo mod tidy
 ```
 
-### Install as Git Submodule
+### 安装为 Git 子模块
 
-Clone [FixIt](https://github.com/hugo-fixit) and this git repository into your theme folder and add it as submodules of your website directory.
+将 [FixIt](https://github.com/hugo-fixit) 和此 git 存储库克隆到你的主题文件夹中，并将其添加为网站目录的子模块。
 
 ```bash
 git submodule add https://github.com/hugo-fixit/FixIt.git themes/FixIt
 git submodule add https://github.com/hugo-fixit/component-projects.git themes/component-projects
 ```
 
-Next edit `hugo.toml` of your project and add this theme component to your themes:
+接下来编辑项目的 `hugo.toml` 并将此主题组件添加到你的主题中：
 
 ```toml
 theme = ["FixIt", "component-projects"]
 ```
 
-## Inject Partial
+## 注入 Partial
 
-Finally, inject the theme component's assets in `layouts/partials/custom.html` within the `custom-head` or `custom-assets` block:
+最后，在 `layouts/partials/custom.html` 中的 `custom-head` 或 `custom-assets` 块内注入主题组件的样式：
 
 ```go-html-template
 {{- define "custom-assets" -}}
@@ -67,32 +83,32 @@ Finally, inject the theme component's assets in `layouts/partials/custom.html` w
 {{- end -}}
 ```
 
-## Configuration (Optional)
+## 配置（可选）
 
-Obtaining repositories information relies on GitHub official API. Before starting to use it, it is recommended to generate personal access token on GitHub to prevent GitHub API usage limit.
+获取仓库信息依赖 GitHub 官方 API。在开始使用之前，建议在 GitHub 上生成个人访问令牌，以防止 GitHub API 使用限制。
 
-1. Click to jump to GitHub [Generate token](https://github.com/settings/tokens/new), select the scope named `public_repo` to generate personal access token.
-2. Configure with environment variable `HUGO_PARAMS_GHTOKEN=your-person-access-token`, see details in [os.Getenv | Hugo](https://gohugo.io/functions/os/getenv/#examples)
+1. 点击跳到 GitHub [生成 token](https://github.com/settings/tokens/new)，选择名为 `public_repo` 的范围以生成个人访问令牌。
+2. 配置环境变量 `HUGO_PARAMS_GHTOKEN=your-person-access-token`，详细信息请参见 [os.Getenv | Hugo](https://gohugo.io/functions/os/getenv/#examples)
 
-## Usage
+## 使用
 
-### Layout
+### 布局
 
-First, create the `projects.yml` file and edit your data:
+首先，创建 `projects.yml` 文件并编辑数据：
 
 ```bash
 cp themes/component-projects/projects.yml.example data/projects.yml
 ```
 
-> If your site is multilingual, you can create a `projects.en.yml` file for English and `projects.zh-cn.yml` for Chinese.
+> 如果你的网站是多语言的，你可以为英语创建一个 `projects.en.yml` 文件，为中文创建一个 `projects.zh-cn.yml` 文件。
 
-Next, create a new page with the `projects` layout:
+接下来，使用 `projects` 布局创建一个新页面：
 
 ```bash
 hugo new projects/_index.md
 ```
 
-Edit the front matter and content of the new page:
+编辑新页面的标题和内容：
 
 ```yaml
 ---
@@ -108,7 +124,7 @@ Some text to display at the start of the page.
 
 ### Shortcodes
 
-Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to display a GitHub repository card:
+在任何页面中使用 `gh-repo-card-container` 和 `gh-repo-card` 短代码来显示卡片式 GitHub 存储库：
 
 ```markdown
 {{< gh-repo-card-container >}}
@@ -117,17 +133,17 @@ Use the `gh-repo-card-container` and `gh-repo-card` shortcodes in any page to di
 {{< /gh-repo-card-container >}}
 ```
 
-### Content Adapter
+### 内容适配器
 
-:tada: This is a awesome feature! It can generate blog posts from the README of the repositories according to the projects data you configured.
+:tada: 这是一个很棒的功能！它能够根据你配置的项目数据，把仓库的 README 自动生成博客文章。
 
-Create `_content.gotmpl` in projects section folder, add the following code:
+在项目文件夹中创建 `_content.gotmpl`，添加以下代码：
 
 ```go-html-template
 {{- partial "adapters/projects.html" . -}}
 ```
 
-Directory structure:
+目录结构如下：
 
 ```plain
 content/
@@ -138,7 +154,7 @@ data/
 └── projects.yml         <-- projects data
 ```
 
-Then, open the `hugo.toml` file and configure the `projectsAdapters` option to enable the content adapter:
+然后，打开 `hugo.toml` 文件，配置的 `projectsAdapters` 选项，启用内容适配器：
 
 ```toml
 [params]
@@ -153,23 +169,23 @@ Then, open the `hugo.toml` file and configure the `projectsAdapters` option to e
       # more font matter here ...
 ```
 
-### Custom Blocks
+### 自定义块
 
-You can implement these blocks through `define`.
+你可以通过 `define` 来实现这些块。
 
-| Block Name        | Description                                       |
-| :---------------- | :------------------------------------------------ |
-| `projects-aside`  | Displayed in the aside of the projects page       |
-| `projects-meta`   | Displayed in the post meta of the projects page   |
-| `projects-footer` | Displayed in the post footer of the projects page |
+| 块名称            | 描述                     |
+| :---------------- | :----------------------- |
+| `projects-aside`  | 显示在项目页面的侧边栏中 |
+| `projects-meta`   | 显示在项目页面的开始处   |
+| `projects-footer` | 显示在项目页面的底部处   |
 
-## Scheduled tasks
+## 定时任务
 
-Since it uses server-side rendering, all data is fetched at build time and not requested from the GitHub API on each visit. Therefore, we can use scheduled tasks to update the data to keep it up to date.
+由于采用服务端渲染，所有数据是在构建时获取的，而不会在每次访问时都请求 GitHub API。因此，我们可以使用定时任务来更新数据，从而保持其最新状态。
 
-### Deploy to GitHub Pages
+### 部署到 GitHub Pages
 
-If your site is hosted on GitHub Pages, you can use GitHub Actions to deploy automatically.
+如果你的网站托管在 GitHub Pages 上，你可以使用 GitHub Actions 自动部署。
 
 ```yaml
 name: Hugo build and deploy
@@ -184,9 +200,9 @@ jobs:
   # Your build and deploy jobs here
 ```
 
-### Deplot to Vercel
+### 部署到 Vercel
 
-If your site is hosted on Vercel, you can use Vercel's [Deploy Hooks](https://vercel.com/docs/deployments/deploy-hooks#creating-&-triggering-deploy-hooks) feature with GitHub Actions to deploy automatically.
+如果你的网站托管在 Vercel 上，你可以使用 Vercel 的 [Deploy Hooks](https://vercel.com/docs/deployments/deploy-hooks#creating-&-triggering-deploy-hooks) 功能配合 GitHub Actions 自动部署。
 
 ```yaml
 name: Vercel deploy hook
@@ -203,8 +219,8 @@ jobs:
           curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
 ```
 
-Create a deploy hook in the project settings of Vercel and add the `VERCEL_DEPLOY_HOOK` variable in the Secrets of the GitHub project.
+在 Vercel 的项目设置中，创建一个部署钩子，并在 GitHub 项目的 Secrets 中添加 `VERCEL_DEPLOY_HOOK` 变量。
 
-## Troubleshooting
+## 故障排除
 
-You can add the `--ignoreCache` parameter to the `hugo server` command to clear the cache in local server.
+本地调试时，可以在 `hugo server` 命令后加上 `--ignoreCache` 参数以清除缓存。
