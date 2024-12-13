@@ -42,6 +42,7 @@
   border-radius: var(--br-gh-repo-card);
   border-style: solid;
   border-width: var(--bw-gh-repo-card);
+  // order: calc(-1 * var(--gh-repo-order, 0));
 
   svg {
     display: inline-block;

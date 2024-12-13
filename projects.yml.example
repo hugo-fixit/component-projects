@@ -7,7 +7,12 @@
     - foo
   collections:
     - developed
-  totalStars: false # whether to count total stars
+  # whether to count total stars
+  totalStars: false
+  # Order by, optional values: ['default', 'name', 'star', 'fork']
+  orderby: default
+  # Order of repos, optional values: ['asc', 'desc']
+  order: asc
   repos:
     - hugo-fixit/FixIt
 - title: My contributed
@@ -20,5 +25,7 @@
   collections:
     - contributed
   totalStars: false
+  orderby: default
+  order: asc
   repos:
     - gohugoio/hugo

@@ -127,6 +127,18 @@
           {{- with $group.description -}}
             <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
           {{- end -}}
+          {{- /* Order by name, star or fork */ -}}
+          {{- $orderKeys := dict
+            "name" "full_name"
+            "star" "stargazers_count"
+            "fork" "forks_count"
+          -}}
+          {{- with $group.orderby -}}
+            {{- $orderKey := index $orderKeys . -}}
+            {{- with $orderKey -}}
+              {{- $repoInfoArr = sort $repoInfoArr . $group.order -}}
+            {{- end -}}
+          {{- end -}}
           {{- /* Repo cards */ -}}
           <div class="gh-repo-card-container">
             {{- range $repoInfo := $repoInfoArr -}}
