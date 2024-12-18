@@ -95,6 +95,7 @@
         "sourceURL" (add $readme.html_url "?plain=1")
         "editURL" (replace $readme.html_url "/blob/" "/edit/" )
         "LinkToReport" false
+        "postSummary" (dict "enabled" false)
       -}}
       {{- $groupParams := $group.params | default dict -}}
       {{- $configParams := $projectsAdapters.params | default dict -}}
