@@ -14,8 +14,12 @@
   {{- $showToc := $toc.enable | and $hasToc -}}
   {{- /* Paginate before content */ -}}
   {{- $pages := .Pages -}}
+  {{- $hiddenAdapters := .Param "hiddenAdapters" | default false -}}
+  {{- if $hiddenAdapters -}}
+    {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
+  {{- end -}}
   {{- if $pages -}}
-    {{- $pages = .Pages.GroupByDate "2006" -}}
+    {{- $pages = $pages.GroupByDate "2006" -}}
     {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
       {{- $pages = $.Paginate $pages . -}}
     {{- else -}}
