@@ -113,6 +113,7 @@
       line-height: 1.5;
     }
     .repo-fork-from {
+      z-index: 1;
       a {
         color: inherit;
         &:hover {
