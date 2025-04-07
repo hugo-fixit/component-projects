@@ -43,6 +43,11 @@
           </a>
         {{- end -}}
       </p>
+      {{- $postLink := printf "/%v/%v" page.Section $repoInfo.full_name -}}
+      {{- $page := site.GetPage $postLink -}}
+      {{- with site.GetPage $postLink -}}
+        <a class="repo-post" href="{{ .RelPermalink }}"></a>
+      {{- end -}}
     </div>
   </div>
 {{- else -}}

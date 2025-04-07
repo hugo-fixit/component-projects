@@ -55,6 +55,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 
     .repo-name {
       display: flex;
@@ -161,6 +162,13 @@
           margin-right: 0.25rem;
         }
       }
+    }
+
+    .repo-post {
+      position: absolute;
+      top: calc(0.875rem * 1.5);
+      height: calc(100% - 0.875rem * 1.5 - 0.75rem * 1.5);
+      width: 100%;
     }
   }
 }
