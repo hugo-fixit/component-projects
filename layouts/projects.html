@@ -6,19 +6,26 @@
 {{- define "content" -}}
   {{- $params := partial "function/params.html" -}}
   {{- $fingerprint := .Scratch.Get "fingerprint" -}}
-  {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
-  {{- $toc := .Scratch.Get "toc" -}}
-  {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
-  {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
-  {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt .Pages.Len 0) -}}
-  {{- $showToc := $toc.enable | and $hasToc -}}
-  {{- /* Paginate before content */ -}}
   {{- $pages := .Pages -}}
   {{- $hiddenAdapters := .Param "hiddenAdapters" | default false -}}
   {{- if $hiddenAdapters -}}
     {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
   {{- end -}}
+  {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
+  {{- $toc := .Scratch.Get "toc" -}}
+  {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
+  {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
+  {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt (len $pages) 0) -}}
+  {{- $showToc := $toc.enable | and $hasToc -}}
+  {{- $localData := newScratch -}}
+  {{- $pageCount := 0 -}}
+  {{- /* Paginate before content */ -}}
   {{- if $pages -}}
+    {{- $pageCount = $pages.Len -}}
+    {{- /* Total page and word count */ -}}
+    {{- range $pages -}}
+      {{- $localData.Add "totalWordCount" .WordCount -}}
+    {{- end -}}
     {{- $pages = $pages.GroupByDate "2006" -}}
     {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
       {{- $pages = $.Paginate $pages . -}}
@@ -77,7 +84,7 @@
             {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#%v\">%v</a></li>" ($group.title | anchorize) $group.title) -}}
           {{- end -}}
         {{- end -}}
-        {{- if .Pages -}}
+        {{- if $pages -}}
           {{- $tocFromData = add $tocFromData (printf "<li><a href=\"#related-articles\">%v</a></li>" (T "projects.relatedArticles")) -}}
         {{- end -}}
         {{- with $tocFromData -}}
@@ -151,19 +158,14 @@
           </div>
         {{- end -}}
         <hr class="awesome-hr">
-        {{- if .Pages -}}
+        {{- if $pages -}}
           <h2 id="related-articles" class="heading-element">
             <span>{{ T "projects.relatedArticles" }}</span>
             <a href="#related-articles" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
           </h2>
-          {{- /* Total page and word count */ -}}
-          {{- $localData := newScratch -}}
-          {{- range .Pages -}}
-            {{- $localData.Add "totalWordCount" .WordCount -}}
-          {{- end -}}
           {{- with ($localData.Get "totalWordCount") -}}
-            <div title="{{- T `section.archiveCounter` $.Pages.Len }} {{ T `section.totalWordCount` . }}" class="group-summary">
-              {{- T "section.archiveCounter" $.Pages.Len }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
+            <div title="{{- T `section.archiveCounter` $pageCount }} {{ T `section.totalWordCount` . }}" class="group-summary">
+              {{- T "section.archiveCounter" $pageCount }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
             </div>
           {{- end -}}
           {{- with $params.sectionSlot -}}
