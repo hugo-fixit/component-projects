@@ -60,7 +60,7 @@ hugo mod tidy
 
 ### Install as Git Submodule
 
-Clone [FixIt](https://github.com/hugo-fixit) and this git repository into your theme folder and add it as submodules of your website directory.
+Clone [FixIt](https://github.com/hugo-fixit/FixIt) and this git repository into your theme folder and add it as submodules of your website directory.
 
 ```bash
 git submodule add https://github.com/hugo-fixit/FixIt.git themes/FixIt
@@ -73,17 +73,19 @@ Next edit `hugo.toml` of your project and add this theme component to your theme
 theme = ["FixIt", "component-projects"]
 ```
 
-## Inject Partial
+## Configuration
 
-Finally, inject the theme component's assets in `layouts/partials/custom.html` within the `custom-head` or `custom-assets` block:
+Finally, in order to Inject the partial `{component-xxx}.html` into the `custom-assets` through the [custom block](https://fixit.lruihao.cn/references/blocks/) opened by the FixIt theme in the `layouts/partials/custom.html` file, you need to fill in the following necessary configurations:
 
-```go-html-template
-{{- define "custom-assets" -}}
-  {{- partial "inject/component-projects.html" . -}}
-{{- end -}}
+```toml
+[params]
+  [params.customPartials]
+    # ... other partials
+    assets = [ "inject/component-projects.html" ]
+    # ... other partials
 ```
 
-## Configuration (Optional)
+## Access Token (Optional)
 
 Obtaining repositories information relies on GitHub official API. Before starting to use it, it is recommended to generate personal access token on GitHub to prevent GitHub API usage limit.
 
