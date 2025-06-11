@@ -2,7 +2,21 @@
 {{- if (.HasShortcode "gh-repo-card") | and (ne .Layout "projects") -}}
   {{- $fingerprint := .Scratch.Get "fingerprint" -}}
   {{- $options := dict "Source" "css/component-projects/repo-card.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/repo-card.min.css" "enableSourceMap" true -}}
+  {{- $toCSS := dict "targetPath" "css/component-projects/repo-card.min.css" "enableSourceMap" true -}}
+  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
+  {{- partial "plugin/style.html" $options -}}
+{{- end -}}
+
+{{- $isContentAdapter := false -}}
+{{- with .File -}}
+  {{- $isContentAdapter = .IsContentAdapter -}}
+{{- end -}}
+
+{{- /* adapter.min.css */ -}}
+{{- if (eq .Params.fromAdapters "projects") | and $isContentAdapter -}}
+  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+  {{- $options := dict "Source" "css/component-projects/adapter.scss" "Fingerprint" $fingerprint -}}
+  {{- $toCSS := dict "targetPath" "css/component-projects/adapter.min.css" "enableSourceMap" true -}}
   {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
   {{- partial "plugin/style.html" $options -}}
 {{- end -}}
