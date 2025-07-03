@@ -29,7 +29,7 @@
 
 ## Requirements
 
-- [FixIt](https://github.com/hugo-fixit) v0.3.7 or higher
+- [FixIt](https://github.com/hugo-fixit) v0.4.0 or higher
 
 ## Installation
 
@@ -75,7 +75,7 @@ theme = ["FixIt", "component-projects"]
 
 ## Configuration
 
-Finally, in order to Inject the partial `{component-xxx}.html` into the `custom-assets` through the [custom block](https://fixit.lruihao.cn/references/blocks/) opened by the FixIt theme in the `layouts/partials/custom.html` file, you need to fill in the following necessary configurations:
+Finally, in order to Inject the partial `{component-projects}.html` into the `custom-assets` through the [custom block](https://fixit.lruihao.cn/references/blocks/) opened by the FixIt theme in the `layouts/_partials/custom.html` file, you need to fill in the following necessary configurations:
 
 ```toml
 [params]

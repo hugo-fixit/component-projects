@@ -5,14 +5,14 @@
 
 {{- define "content" -}}
   {{- $params := partial "function/params.html" -}}
-  {{- $fingerprint := .Scratch.Get "fingerprint" -}}
+  {{- $fingerprint := .Site.Store.Get "fingerprint" -}}
   {{- $pages := .Pages -}}
   {{- $hiddenAdapters := .Param "hiddenAdapters" | default false -}}
   {{- if $hiddenAdapters -}}
     {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
   {{- end -}}
   {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
-  {{- $toc := .Scratch.Get "toc" -}}
+  {{- $toc := .Store.Get "toc" -}}
   {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt (len $pages) 0) -}}
@@ -109,7 +109,7 @@
       <div class="content" id="content">
         {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
         {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "RelPermalink" .RelPermalink)) -}}
-        {{- $headers := dict "headers" (.Scratch.Get "githubTokenHeader") -}}
+        {{- $headers := dict "headers" (hugo.Store.Get "githubTokenHeader") -}}
         {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
         {{- range $group := $data -}}
           <h2 id="{{ $group.title | anchorize }}" class="heading-element">
