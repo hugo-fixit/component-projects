@@ -29,7 +29,7 @@
 
 ## 要求
 
-- [FixIt](https://github.com/hugo-fixit) v0.3.7 或更高版本
+- [FixIt](https://github.com/hugo-fixit) v0.4.0 或更高版本
 
 ## 安装
 
