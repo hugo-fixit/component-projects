@@ -1,0 +1,32 @@
+name: Release for new tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch all history for generating release notes
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 'lts/*'
+
+      - name: Generate release notes
+        run: |
+          npx auto-changelog-plus --starting-version ${{ github.ref_name }}
+          sed -i '1,4d' CHANGELOG.md
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          body_path: CHANGELOG.md
