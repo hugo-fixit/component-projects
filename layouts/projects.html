@@ -17,6 +17,7 @@
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt (len $pages) 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
+  {{- .Store.Set "showToc" $showToc -}}
   {{- $localData := newScratch -}}
   {{- $pageCount := 0 -}}
   {{- /* Paginate before content */ -}}
@@ -227,7 +228,6 @@
 
   {{- /* TOC Dialog */ -}}
   {{- if $showToc -}}
-    {{- .Page.Store.Set "hasToc" true -}}
     <dialog id="toc-dialog" aria-labelledby="toc-dialog-title" role="dialog">
       <div class="toc">
         <h2 class="toc-title">{{ T "single.contents" }}</h2>
