@@ -22,7 +22,7 @@
 
 {{- if $projectsAdapters.enable -}}
   {{- warnf "component-projects\n%v" (T "projects.warningAdapter") -}}
-  {{- $data := index .Site.Data (printf "projects.%v" .Site.Language.Lang) | default .Site.Data.projects -}}
+  {{- $data := index hugo.Data (printf "projects.%v" .Site.Language.Lang) | default hugo.Data.projects -}}
   {{- $renderedRepos := slice -}}
   {{- $auth := dict "Authorization" "" -}}
   {{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
@@ -105,6 +105,7 @@
       {{- $markdown := $readme.content | base64Decode -}}
       {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
       {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
+      {{- $markdown = replace $markdown "{{%" "{{?{}%" -}}
       {{- /* Convert relative links to absolute links in the README content */ -}}
       {{- $replacement := printf "$1[$2](%v$3$4)" (printf "https://raw.githubusercontent.com/%v/refs/heads/%v" $repoInfo.full_name $repoInfo.default_branch) -}}
       {{- /* Oops! Lookahead regular lookup is not supported in Golang, e.g `(?!http)` */ -}}

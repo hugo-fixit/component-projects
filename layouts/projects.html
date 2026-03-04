@@ -11,7 +11,7 @@
   {{- if $hiddenAdapters -}}
     {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
   {{- end -}}
-  {{- $data := index .Site.Data (printf "projects.%v" .Language) | default .Site.Data.projects -}}
+  {{- $data := index hugo.Data (printf "projects.%v" .Language) | default hugo.Data.projects -}}
   {{- $toc := .Store.Get "toc" -}}
   {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
