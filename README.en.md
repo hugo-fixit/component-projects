@@ -29,7 +29,7 @@
 
 ## Requirements
 
-- [FixIt](https://github.com/hugo-fixit) v0.4.0 or higher
+- [FixIt](https://github.com/hugo-fixit) v1.0.0 or higher
 
 ## Installation
 

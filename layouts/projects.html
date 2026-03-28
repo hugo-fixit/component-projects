@@ -179,7 +179,7 @@
 
     {{- /* Paginator render */ -}}
     {{- if $pages -}}
-      {{- partial "recently-updated.html" . -}}
+      {{- partial "section/recently-updated.html" . -}}
       {{- range $pages.PageGroups -}}
         <h3 class="group-title">
           {{- dict "Class" "fa-regular fa-calendar fa-fw me-1" | partial "plugin/icon.html" -}}
@@ -200,7 +200,7 @@
           </article>
         {{- end -}}
       {{- end -}}
-      {{- partial "paginator.html" . -}}
+      {{- partial "layout/paginator.html" . -}}
     {{- end -}}
 
     {{- if eq $.Paginator.PageNumber 1 -}}
@@ -209,9 +209,6 @@
         {{- /* Projects Footer */ -}}
         {{- block "projects-footer" . }}<div class="component-projects-powered">{{ (T "projects.poweredBy") | safeHTML }}</div>{{ end -}}
       </div>
-
-      {{- /* Comment */ -}}
-      {{- partial "single/comment.html" . -}}
     {{- end -}}
   </article>
 
@@ -237,4 +234,8 @@
       </div>
     </dialog>
   {{- end -}}
+{{- end -}}
+
+{{- define "comments" -}}
+  {{- partial "layout/comment.html" . -}}
 {{- end -}}
