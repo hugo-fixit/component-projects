@@ -12,9 +12,9 @@
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=russian">Русский язык</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=spanish">Español</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=hindi">हिन्दी</a> |
-  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=deutsch">deutsch</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=deutsch">Deutsch</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=korean">한국어</a> |
-  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=japanese">しろうと</a>
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=japanese">日本語</a>
 </div>
 
 ## Demo
