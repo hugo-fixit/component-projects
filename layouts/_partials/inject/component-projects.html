@@ -1,10 +1,13 @@
+{{- $fingerprint := .Site.Store.Get "fingerprint" -}}
+
 {{- /* repo-card.min.css */ -}}
 {{- if (.HasShortcode "gh-repo-card") | and (ne .Layout "projects") -}}
-  {{- $fingerprint := .Site.Store.Get "fingerprint" -}}
-  {{- $options := dict "Source" "css/component-projects/repo-card.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/component-projects/repo-card.min.css" "enableSourceMap" true -}}
-  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
-  {{- partial "plugin/style.html" $options -}}
+  {{- dict
+    "Source" "scss/repo-card.scss"
+    "ToCSS" true
+    "Fingerprint" $fingerprint
+    | partial "plugin/style.html"
+  -}}
 {{- end -}}
 
 {{- $isContentAdapter := false -}}
@@ -14,9 +17,10 @@
 
 {{- /* adapter.min.css */ -}}
 {{- if (eq .Params.fromAdapters "projects") | and $isContentAdapter -}}
-  {{- $fingerprint := .Site.Store.Get "fingerprint" -}}
-  {{- $options := dict "Source" "css/component-projects/adapter.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/component-projects/adapter.min.css" "enableSourceMap" true -}}
-  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
-  {{- partial "plugin/style.html" $options -}}
+  {{- dict
+    "Source" "scss/projects-adapter.scss"
+    "ToCSS" true
+    "Fingerprint" $fingerprint
+    | partial "plugin/style.html"
+  -}}
 {{- end -}}

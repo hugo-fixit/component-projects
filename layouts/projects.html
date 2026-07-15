@@ -4,16 +4,14 @@
 {{- end -}}
 
 {{- define "content" -}}
-  {{- $params := partial "function/params.html" -}}
-  {{- $fingerprint := .Site.Store.Get "fingerprint" -}}
   {{- $pages := .Pages -}}
-  {{- $hiddenAdapters := .Param "hiddenAdapters" | default false -}}
+  {{- $hiddenAdapters := .Param "hidden_adapters" | default false -}}
   {{- if $hiddenAdapters -}}
     {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
   {{- end -}}
   {{- $data := index hugo.Data (printf "projects.%v" .Language) | default hugo.Data.projects -}}
-  {{- $toc := .Store.Get "toc" -}}
-  {{- $tableOfContents := .Fragments.ToHTML ($toc.startlevel | int) ($toc.endlevel | int) false -}}
+  {{- $toc := dict "Page" . "Key" "toc" | partial "function/param.html" -}}
+  {{- $tableOfContents := .Fragments.ToHTML ($toc.start_level | int) ($toc.end_level | int) false -}}
   {{- $contentToc := ne $tableOfContents `<nav id="TableOfContents"></nav>` -}}
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt (len $pages) 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
@@ -36,10 +34,13 @@
   {{- end -}}
 
   {{- /* component-projects.min.css */ -}}
-  {{- $options := dict "Source" "css/component-projects/index.scss" "Fingerprint" $fingerprint -}}
-  {{- $toCSS := dict "targetPath" "css/component-projects.min.css" "enableSourceMap" true -}}
-  {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
-  {{- partial "plugin/style.html" $options -}}
+  {{- $scssVars := partialCached "function/scss-vars.html" . -}}
+  {{- dict
+    "Source" "scss/projects.scss"
+    "ToCSS" (dict "vars" $scssVars)
+    "Fingerprint" (.Site.Store.Get "fingerprint")
+    | partial "plugin/style.html"
+  -}}
 
   <aside class="animate__animated animate__fadeIn animate__faster">
     {{- /* Projects Aside */ -}}
@@ -56,7 +57,7 @@
         {{- title (.Params.Title | default ((T .Section) | default .Section | dict "Some" | T "allSome")) }}
       </h1>
       {{- /* Subtitle */ -}}
-      {{- with $params.subtitle -}}<p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>{{- end -}}
+      {{- with .Params.subtitle -}}<p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>{{- end -}}
     </div>
 
     {{- /* Meta */ -}}
@@ -67,14 +68,16 @@
 
     {{- if eq $.Paginator.PageNumber 1 -}}
       {{- /* Featured image */ -}}
-      {{- $image := $params.featuredimage -}}
-      {{- with .Resources.GetMatch "featured-image" -}}
-        {{- $image = .RelPermalink -}}
-      {{- end -}}
-      {{- with $image -}}
-        <div class="featured-image">
-          {{- dict "Src" . "Title" $.Description | partial "plugin/image.html" -}}
-        </div>
+      {{- $cover := dict "Page" . | partial "function/get-cover.html" -}}
+      {{- if $cover.Source | or (gt (len $cover.Matches) 0) -}}
+      <div class="featured-image">
+        {{- $optim := slice
+          (dict "Process" "resize 800x webp" "descriptor" "800w")
+          (dict "Process" "resize 1200x webp" "descriptor" "1200w")
+          (dict "Process" "resize 1600x webp" "descriptor" "1600w")
+        -}}
+        {{- dict "Src" $cover.Source "Title" $.Description "Resources" $.Resources "Matches" $cover.Matches "Loading" "eager" "Sizes" "(max-width: 679.9px) 100vw, (max-width: 959.9px) 80vw, (max-width: 1439.9px) 56vw, 800px" "OptimConfig" $optim | partial "plugin/image.html" -}}
+      </div>
       {{- end -}}
 
       {{- /* Static TOC */ -}}
@@ -95,21 +98,20 @@
             {{- $tableOfContents = replaceRE "</nav>" (printf "<ul>%v</ul></nav>" .) $tableOfContents -}}
           {{- end -}}
         {{- end -}}
-        {{- $tableOfContents := dict "Content" $tableOfContents "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
-        <div class="details toc{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-static" data-kept="{{ if $toc.keepstatic }}true{{ else }}false{{ end }}">
+        {{- $tableOfContents := dict "Content" $tableOfContents "Ruby" (.Param "ruby") "Fraction" (.Param "fraction") "Fontawesome" (.Param "fontawesome") | partial "function/content.html" | safeHTML -}}
+        <div class="details toc" id="toc-static" data-kept="{{ if $toc.keepstatic }}true{{ else }}false{{ end }}">
           <div class="details-summary toc-title">
             <span>{{ T "single.contents" }}</span>
             <span>{{ dict "Class" "details-icon fa-solid fa-angle-right" | partial "plugin/icon.html" }}</span>
           </div>
-          <div class="details-content toc-content" id="toc-content-static">
-            {{- $tableOfContents -}}
-          </div>
+          <div class="details-content toc-content" id="toc-content-static"></div>
         </div>
+        <template data-toc>{{ $tableOfContents }}</template>
       {{- end -}}
 
       {{- /* Content */ -}}
       <div class="content" id="content">
-        {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+        {{- dict "Content" .Content "Ruby" (.Param "ruby") "Fraction" (.Param "fraction") "Fontawesome" (.Param "fontawesome") | partial "function/content.html" | safeHTML -}}
         {{- warnf "component-projects\n%v" (T "projects.warningLayout" (dict "RelPermalink" .RelPermalink)) -}}
         {{- $headers := dict "headers" (hugo.Store.Get "githubTokenHeader") -}}
         {{- $githubLangColors := partial "function/get-remote-json" (dict "URL" "https://raw.githubusercontent.com/ozh/github-colors/master/colors.json" "OPTIONS" $headers ) -}}
@@ -138,7 +140,7 @@
             </div>
           {{- end -}}
           {{- with $group.description -}}
-            <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
+            <p>{{- dict "Content" (. | $.RenderString) "Ruby" ($.Param "ruby") "Fraction" ($.Param "fraction") "Fontawesome" ($.Param "fontawesome") | partial "function/content.html" | safeHTML -}}</p>
           {{- end -}}
           {{- /* Order by name, star or fork */ -}}
           {{- $orderKeys := dict
@@ -170,8 +172,8 @@
               {{- T "section.archiveCounter" $pageCount }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
             </div>
           {{- end -}}
-          {{- with $params.sectionSlot -}}
-            <p>{{- dict "Content" (. | $.RenderString) "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}</p>
+          {{- with .Params.sectionSlot -}}
+            <p>{{- dict "Content" (. | $.RenderString) "Ruby" ($.Param "ruby") "Fraction" ($.Param "fraction") "Fontawesome" ($.Param "fontawesome") | partial "function/content.html" | safeHTML -}}</p>
           {{- end -}}
         {{- end -}}
       </div>
@@ -200,7 +202,7 @@
           </article>
         {{- end -}}
       {{- end -}}
-      {{- partial "layout/paginator.html" . -}}
+      {{- partial "base/paginator.html" . -}}
     {{- end -}}
 
     {{- if eq $.Paginator.PageNumber 1 -}}
@@ -215,27 +217,28 @@
   <aside class="toc" id="toc-auto" aria-label="{{ T "single.contents" }}">
     {{- /* Auto TOC */ -}}
     {{- if $showToc -}}
-      <h2 class="toc-title{{ with $params.password }} encrypted-hidden{{ end }}">
+      <h2 class="toc-title">
         {{- T "single.contents" -}}&nbsp;
         {{- dict "Class" "toc-icon fa-solid fa-angle-down fa-fw" | partial "plugin/icon.html" -}}
       </h2>
-      <div class="toc-content{{ if eq $toc.auto false }} always-active{{ end }}{{ with $params.password }} encrypted-hidden{{ end }}" id="toc-content-auto"></div>
+      <div class="toc-content{{ if eq $toc.auto false }} always-active{{ end }}" id="toc-content-auto"></div>
     {{- end -}}
   </aside>
 
   {{- /* TOC Dialog */ -}}
   {{- if $showToc -}}
-    <dialog id="toc-dialog" aria-labelledby="toc-dialog-title" role="dialog">
+    <dialog id="toc-dialog" aria-labelledby="toc-dialog-title" closedby="any">
+      <button type="button" class="toc-close-btn" aria-label="Close Table of Contents">
+        {{- dict "Class" "fa-solid fa-xmark fa-lg" | partial "plugin/icon.html" -}}
+      </button>
       <div class="toc">
-        <h2 class="toc-title">{{ T "single.contents" }}</h2>
-        <div class="toc-content" id="toc-content-drawer">
-          {{- replace $tableOfContents `id="TableOfContents"` "" | safeHTML -}}
-        </div>
+        <h2 class="toc-title" id="toc-dialog-title">{{ T "single.contents" }}</h2>
+        <div class="toc-content" id="toc-content-drawer"></div>
       </div>
     </dialog>
   {{- end -}}
 {{- end -}}
 
 {{- define "comments" -}}
-  {{- partial "layout/comment.html" . -}}
+  {{- partial "base/comment.html" . -}}
 {{- end -}}

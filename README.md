@@ -33,7 +33,7 @@
 
 ## 安装
 
-安装方法与 [安装主题](https://fixit.lruihao.cn/documentation/installation/) 相同。有几种安装方法，请选择一种。
+安装方法与 [安装主题](https://fixit.lruihao.cn/docs/installation/) 相同。有几种安装方法，请选择一种。
 
 ### 安装为 Hugo 模块
 
@@ -79,7 +79,7 @@ theme = ["FixIt", "component-projects"]
 
 ```toml
 [params]
-  [params.customPartials]
+  [params.custom_partials]
     # ... other partials
     assets = [ "inject/component-projects.html" ]
     # ... other partials
@@ -118,7 +118,7 @@ title: My Projects
 titleIcon: fa-solid fa-laptop-code
 subtitle: <https://github.com/Lruihao>
 sectionSlot: Some text to display in the section slot which is above the related articles list.
-hiddenAdapters: false
+hidden_adapters: false
 layout: projects
 ---
 
@@ -157,19 +157,21 @@ data/
 └── projects.yml         <-- projects data
 ```
 
-然后，打开 `hugo.toml` 文件，配置的 `projectsAdapters` 选项，启用内容适配器：
+然后，打开 `hugo.toml` 文件，配置的 `projects_adapters` 选项，启用内容适配器：
 
 ```toml
 [params]
-  [params.projectsAdapters]
-    enable = true
-    onlyPublic = true
-    categories = []
-    collections = []
-    ignoreList = []
-    [params.projectsAdapters.params]
-      hiddenFromHomePage = true
-      # more font matter here ...
+
+[params.projects_adapters]
+enable = true
+only_public = true
+categories = []
+collections = []
+ignore_list = []
+
+[params.projects_adapters.params]
+hidden_from_home_page = true
+# more font matter here ...
 ```
 
 ### 自定义块

@@ -18,7 +18,7 @@
   * @author Lruihao (https://lruihao.cn)
 */ -}}
 
-{{- $projectsAdapters := .Site.Params.projectsAdapters -}}
+{{- $projectsAdapters := partial "function/camel-case-keys.html" .Site.Params.projects_adapters -}}
 
 {{- if $projectsAdapters.enable -}}
   {{- warnf "component-projects\n%v" (T "projects.warningAdapter") -}}
