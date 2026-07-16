@@ -1,8 +1,9 @@
 - title: My developed
   description: Below are some open source works I have developed.
+  # whether to enable content adapters for this group
   contentAdapters: false
   params:
-    hiddenFromHomePage: true
+    hidden_from_home_page: true
   categories:
     - foo
   collections:
@@ -19,7 +20,7 @@
   description: Below are some open source works I have contributed to.
   contentAdapters: false
   params:
-    hiddenFromHomePage: true
+    hidden_from_home_page: true
   categories:
     - bar
   collections:

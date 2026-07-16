@@ -1,19 +1,22 @@
 [params]
-  # Content adapters config for component projects
-  [params.projectsAdapters]
-    enable = false
-    # Whether to show only public repos
-    onlyPublic = true
-    # Default categories and collections
-    categories = []
-    collections = []
-    # Ignore repos in the ignore list
-    ignoreList = []
-    [params.projectsAdapters.params]
-      hiddenFromHomePage = true
-      # more font matter here ...
+
+# Content adapters config for component projects
+[params.projects_adapters]
+enable = false
+# Whether to show only public repos
+only_public = true
+# Default categories and collections
+categories = []
+collections = []
+# Ignore repos in the ignore list
+ignore_list = []
+
+[params.projects_adapters.params]
+hidden_from_home_page = true
+# more font matter here ...
 
 [module]
-  [module.hugoVersion]
-    extended = true
-    min = "0.156.0"
+
+[module.hugoVersion]
+extended = true
+min = "0.161.0"

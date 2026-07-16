@@ -1,22 +1,13 @@
 // GitHub Repository Card
 :root {
-  --bg-gh-repo-card: #ffffff;
-  --bc-gh-repo-card: #d0d7de;
   --br-gh-repo-card: 0.375rem;
   --bw-gh-repo-card: MAX(1px, 0.0625rem);
-  --color-muted: #636c76;
-  --color-attention: #9a6700;
-  --bc-attention: #bf8700;
-  --url-color: #0969da;
-}
-
-[data-theme='dark'] {
-  --bg-gh-repo-card: #22272e;
-  --bc-gh-repo-card: #444c56;
-  --color-muted: #717e8b;
-  --color-attention: #c69026;
-  --bc-attention: #966600;
-  --url-color: #478be6;
+  --bg-gh-repo-card: light-dark(#ffffff, #22272e);
+  --bc-gh-repo-card: light-dark(#d0d7de, #444c56);
+  --color-muted: light-dark(#636c76, #717e8b);
+  --color-attention: light-dark(#9a6700, #c69026);
+  --bc-attention: light-dark(#bf8700, #966600);
+  --url-color: light-dark(#0969da, #478be6);
 }
 
 .gh-repo-card-container {

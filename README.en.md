@@ -12,9 +12,9 @@
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=russian">Русский язык</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=spanish">Español</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=hindi">हिन्दी</a> |
-  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=deutsch">deutsch</a> |
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=deutsch">Deutsch</a> |
   <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=korean">한국어</a> |
-  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=japanese">しろうと</a>
+  <a href="https://fixit.lruihao.cn/ecosystem/hugo-fixit/component-projects/?lang=japanese">日本語</a>
 </div>
 
 ## Demo
@@ -29,11 +29,11 @@
 
 ## Requirements
 
-- [FixIt](https://github.com/hugo-fixit) v0.4.0 or higher
+- [FixIt](https://github.com/hugo-fixit) v1.0.0 or higher
 
 ## Installation
 
-The installation method is the same as [installing a theme](https://fixit.lruihao.cn/documentation/installation/). There are several ways to install, choose one.
+The installation method is the same as [installing a theme](https://fixit.lruihao.cn/docs/installation/). There are several ways to install, choose one.
 
 ### Install as Hugo Module
 
@@ -46,7 +46,7 @@ Then add this theme component to your `hugo.toml` configuration file:
   [[module.imports]]
     path = "github.com/hugo-fixit/FixIt"
   [[module.imports]]
-    path = "github.com/hugo-fixit/component-projects"
+    path = "github.com/hugo-fixit/component-projects/v2"
 ```
 
 On the first start of Hugo it will download the required files.
@@ -79,7 +79,7 @@ Finally, in order to Inject the partial `{component-projects}.html` into the `cu
 
 ```toml
 [params]
-  [params.customPartials]
+  [params.custom_partials]
     # ... other partials
     assets = [ "inject/component-projects.html" ]
     # ... other partials
@@ -118,7 +118,7 @@ title: My Projects
 titleIcon: fa-solid fa-laptop-code
 subtitle: <https://github.com/Lruihao>
 sectionSlot: Some text to display in the section slot which is above the related articles list.
-hiddenAdapters: false
+hidden_adapters: false
 layout: projects
 ---
 
@@ -157,19 +157,21 @@ data/
 └── projects.yml         <-- projects data
 ```
 
-Then, open the `hugo.toml` file and configure the `projectsAdapters` option to enable the content adapter:
+Then, open the `hugo.toml` file and configure the `projects_adapters` option to enable the content adapter:
 
 ```toml
 [params]
-  [params.projectsAdapters]
-    enable = true
-    onlyPublic = true
-    categories = []
-    collections = []
-    ignoreList = []
-    [params.projectsAdapters.params]
-      hiddenFromHomePage = true
-      # more font matter here ...
+
+[params.projects_adapters]
+enable = true
+only_public = true
+categories = []
+collections = []
+ignore_list = []
+
+[params.projects_adapters.params]
+hidden_from_home_page = true
+# more font matter here ...
 ```
 
 ### Custom Blocks
