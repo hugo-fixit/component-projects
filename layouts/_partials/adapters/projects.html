@@ -22,7 +22,7 @@
 
 {{- if $projectsAdapters.enable -}}
   {{- warnf "component-projects\n%v" (T "projects.warningAdapter") -}}
-  {{- $data := index hugo.Data (printf "projects.%v" .Site.Language.Lang) | default hugo.Data.projects -}}
+  {{- $data := index hugo.Data (printf "projects.%v" .Site.Language.Name) | default hugo.Data.projects -}}
   {{- $renderedRepos := slice -}}
   {{- $auth := dict "Authorization" "" -}}
   {{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
@@ -43,7 +43,7 @@
       {{- $projectsAdapters.ignoreList  -}}
       {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
       {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers) -}}
-      {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Lang -}}
+      {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Name -}}
       {{- $readme := partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers) -}}
 
       {{- /* Get the default README if the multi-language README is not available */ -}}
