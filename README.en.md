@@ -46,7 +46,7 @@ Then add this theme component to your `hugo.toml` configuration file:
   [[module.imports]]
     path = "github.com/hugo-fixit/FixIt"
   [[module.imports]]
-    path = "github.com/hugo-fixit/component-projects"
+    path = "github.com/hugo-fixit/component-projects/v2"
 ```
 
 On the first start of Hugo it will download the required files.
