@@ -43,10 +43,12 @@ Then add this theme component to your `hugo.toml` configuration file:
 
 ```toml
 [module]
-  [[module.imports]]
-    path = "github.com/hugo-fixit/FixIt"
-  [[module.imports]]
-    path = "github.com/hugo-fixit/component-projects/v2"
+
+[[module.imports]]
+path = "github.com/hugo-fixit/FixIt"
+
+[[module.imports]]
+path = "github.com/hugo-fixit/component-projects/v2"
 ```
 
 On the first start of Hugo it will download the required files.
@@ -79,10 +81,11 @@ Finally, in order to Inject the partial `{component-projects}.html` into the `cu
 
 ```toml
 [params]
-  [params.custom_partials]
-    # ... other partials
-    assets = [ "inject/component-projects.html" ]
-    # ... other partials
+
+[params.custom_partials]
+# ... other partials
+assets = [ "inject/component-projects.html" ]
+# ... other partials
 ```
 
 ## Access Token (Optional)

@@ -43,10 +43,12 @@
 
 ```toml
 [module]
-  [[module.imports]]
-    path = "github.com/hugo-fixit/FixIt"
-  [[module.imports]]
-    path = "github.com/hugo-fixit/component-projects/v2"
+
+[[module.imports]]
+path = "github.com/hugo-fixit/FixIt"
+
+[[module.imports]]
+path = "github.com/hugo-fixit/component-projects/v2"
 ```
 
 在第一次启动 Hugo 时，它将下载所需的文件。
@@ -79,10 +81,11 @@ theme = ["FixIt", "component-projects"]
 
 ```toml
 [params]
-  [params.custom_partials]
-    # ... other partials
-    assets = [ "inject/component-projects.html" ]
-    # ... other partials
+
+[params.custom_partials]
+# ... other partials
+assets = [ "inject/component-projects.html" ]
+# ... other partials
 ```
 
 ## 访问令牌（可选）
