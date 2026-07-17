@@ -16,7 +16,7 @@
 {{- end -}}
 
 {{- /* adapter.min.css */ -}}
-{{- if (eq .Params.fromAdapters "projects") | and $isContentAdapter -}}
+{{- if (eq .Params.from_adapters "projects") | and $isContentAdapter -}}
   {{- dict
     "Source" "scss/projects-adapter.scss"
     "ToCSS" true

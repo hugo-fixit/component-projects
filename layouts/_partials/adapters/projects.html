@@ -122,23 +122,23 @@
         "Website" $repoInfo.homepage
       ) -}}
       {{- $params := dict
-        "fromAdapters" "projects"
+        "from_adapters" "projects"
         "author" $author
         "categories" $categories
         "collections" $collections
         "tags" $repoInfo.topics
         "lightgallery" true
-        "capitalizeTitles" false
+        "capitalize_titles" false
         "toc" (dict "ordered" false)
         "subtitle" $subtitle
-        "sourceURL" (add $readme.html_url "?plain=1")
-        "editURL" (replace $readme.html_url "/blob/" "/edit/" )
-        "LinkToReport" false
-        "postSummary" (dict "enable" false)
-        "postChat" (dict "upLoadWeb" false)
+        "source_url" (add $readme.html_url "?plain=1")
+        "edit_url" (replace $readme.html_url "/blob/" "/edit/" )
+        "post_link" (dict "report" false)
+        "post_summary" (dict "enable" false)
+        "post_chat" (dict "upload_web" false)
       -}}
       {{- $groupParams := $group.params | default dict -}}
-      {{- $configParams := $projectsAdapters.params | default dict -}}
+      {{- $configParams := $.Site.Params.projects_adapters.params | default dict -}}
       {{- $params = $groupParams | merge $configParams | merge $params -}}
       {{- /* Post content from repo README (cache content is already decoded) */ -}}
       {{- $markdown := $readme.content -}}
