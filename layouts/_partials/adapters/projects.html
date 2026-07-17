@@ -29,6 +29,7 @@
     {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
   {{- end -}}
   {{- $headers := dict "headers" $auth -}}
+  {{- $cachedRepos := index (index hugo.Data "caches") "projects" | default dict -}}
 
   {{- /* Loop through the data and create a post for each repo */ -}}
   {{- range $group := $data -}}
@@ -40,16 +41,25 @@
       {{- if (in $projectsAdapters.ignoreList $repo) | or (in $renderedRepos $repo) -}}
         {{- continue -}}
       {{- end -}}
-      {{- $projectsAdapters.ignoreList  -}}
-      {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
-      {{- $repoInfo := partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers) -}}
-      {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Name -}}
-      {{- $readme := partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers) -}}
-
-      {{- /* Get the default README if the multi-language README is not available */ -}}
-      {{- if not $readme -}}
-        {{- $readmeAPI = printf "https://api.github.com/repos/%v/readme" $repo -}}
+      {{- /* Try to get repo info from cache first, fall back to GitHub API */ -}}
+      {{- $repoData := index $cachedRepos $repo -}}
+      {{- $repoInfo := dict -}}
+      {{- $readme := dict -}}
+      {{- $isCached := false -}}
+      {{- if $repoData -}}
+        {{- $repoInfo = $repoData -}}
+        {{- $readme = $repoData.readme | default dict -}}
+        {{- $isCached = true -}}
+      {{- else -}}
+        {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
+        {{- $repoInfo = partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers) -}}
+        {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Name -}}
         {{- $readme = partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers) -}}
+        {{- /* Get the default README if the multi-language README is not available */ -}}
+        {{- if not $readme -}}
+          {{- $readmeAPI = printf "https://api.github.com/repos/%v/readme" $repo -}}
+          {{- $readme = partial "function/get-remote-json" (dict "URL" $readmeAPI "OPTIONS" $headers) -}}
+        {{- end -}}
       {{- end -}}
 
       {{- /* Skip if the repo info or README is not available */ -}}
@@ -101,8 +111,8 @@
       {{- $groupParams := $group.params | default dict -}}
       {{- $configParams := $projectsAdapters.params | default dict -}}
       {{- $params = $groupParams | merge $configParams | merge $params -}}
-      {{- /* Post content from repo README */ -}}
-      {{- $markdown := $readme.content | base64Decode -}}
+      {{- /* Post content from repo README (cache content is already decoded) */ -}}
+      {{- $markdown := cond $isCached $readme.content ($readme.content | base64Decode) -}}
       {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
       {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
       {{- $markdown = replace $markdown "{{%" "{{?{}%" -}}

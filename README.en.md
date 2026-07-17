@@ -189,45 +189,19 @@ You can implement these blocks through `define`.
 
 ## Scheduled tasks
 
-Since it uses server-side rendering, all data is fetched at build time and not requested from the GitHub API on each visit. Therefore, we can use scheduled tasks to update the data to keep it up to date.
+Since it uses server-side rendering, all data is fetched at build time and not requested from the GitHub API on each visit. To keep data up to date, this component provides a `cache-projects.yml` GitHub Action workflow template that periodically pre-caches project data into `data/caches/projects.json`. Hugo will read from the cache at build time, significantly reducing build times.
 
-### Deploy to GitHub Pages
+### Set up scheduled caching
 
-If your site is hosted on GitHub Pages, you can use GitHub Actions to deploy automatically.
+Copy the workflow template to your site repository:
 
-```yaml
-name: Hugo build and deploy
-on:
-  schedule:
-    # Rebuid the site every day at 00:00 UTC to update the projects data
-    - cron: '0 0 * * *'
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-jobs:
-  # Your build and deploy jobs here
+```bash
+cp themes/component-projects/.github/workflows/cache-projects.yml .github/workflows/cache-projects.yml
 ```
 
-### Deplot to Vercel
+This workflow runs automatically at 00:00 UTC daily and can also be triggered manually. It extracts all repos from `data/projects*.yml`, fetches repo info and README content via the GitHub API, and writes the results to `data/caches/projects.json`.
 
-If your site is hosted on Vercel, you can use Vercel's [Deploy Hooks](https://vercel.com/docs/deployments/deploy-hooks#creating-&-triggering-deploy-hooks) feature with GitHub Actions to deploy automatically.
-
-```yaml
-name: Vercel deploy hook
-on:
-  schedule:
-    # Rebuid the site every day at 00:00 UTC to update the projects data
-    - cron: '0 0 * * *'
-jobs:
-  Vercel-Deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Vercel deploy hook
-        run: |
-          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
-```
-
-Create a deploy hook in the project settings of Vercel and add the `VERCEL_DEPLOY_HOOK` variable in the Secrets of the GitHub project.
+> After the first run, `data/caches/projects.json` will be generated and committed to the repository. Subsequent Hugo builds will read directly from the cache file instead of making individual GitHub API requests. Committing the cache file will automatically trigger your site's deployment workflow — no extra configuration needed.
 
 ## Troubleshooting
 

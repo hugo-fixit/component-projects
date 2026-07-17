@@ -189,45 +189,19 @@ hidden_from_home_page = true
 
 ## 定时任务
 
-由于采用服务端渲染，所有数据是在构建时获取的，而不会在每次访问时都请求 GitHub API。因此，我们可以使用定时任务来更新数据，从而保持其最新状态。
+由于采用服务端渲染，所有数据是在构建时获取的，而不会在每次访问时都请求 GitHub API。为了保持数据最新，本组件提供了 `cache-projects.yml` GitHub Action 工作流模板，用于定时预缓存项目数据到 `data/caches/projects.json`，Hugo 构建时将优先读取缓存数据，大幅减少构建时间。
 
-### 部署到 GitHub Pages
+### 配置定时缓存
 
-如果你的网站托管在 GitHub Pages 上，你可以使用 GitHub Actions 自动部署。
+将工作流模板复制到你的站点仓库：
 
-```yaml
-name: Hugo build and deploy
-on:
-  schedule:
-    # Rebuid the site every day at 00:00 UTC to update the projects data
-    - cron: '0 0 * * *'
-  push:
-    branches: [ main ]
-  workflow_dispatch:
-jobs:
-  # Your build and deploy jobs here
+```bash
+cp themes/component-projects/.github/workflows/cache-projects.yml .github/workflows/cache-projects.yml
 ```
 
-### 部署到 Vercel
+该工作流默认每天 UTC 00:00 自动运行，也可手动触发。它会从 `data/projects*.yml` 中提取所有仓库，通过 GitHub API 获取仓库信息和 README 内容，然后写入 `data/caches/projects.json`。
 
-如果你的网站托管在 Vercel 上，你可以使用 Vercel 的 [Deploy Hooks](https://vercel.com/docs/deployments/deploy-hooks#creating-&-triggering-deploy-hooks) 功能配合 GitHub Actions 自动部署。
-
-```yaml
-name: Vercel deploy hook
-on:
-  schedule:
-    # Rebuid the site every day at 00:00 UTC to update the projects data
-    - cron: '0 0 * * *'
-jobs:
-  Vercel-Deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Vercel deploy hook
-        run: |
-          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK }}
-```
-
-在 Vercel 的项目设置中，创建一个部署钩子，并在 GitHub 项目的 Secrets 中添加 `VERCEL_DEPLOY_HOOK` 变量。
+> 首次运行后 `data/caches/projects.json` 会被生成并提交到仓库，后续 Hugo 构建将直接读取缓存文件，不再逐个请求 GitHub API。提交缓存文件会自动触发你的站点部署工作流，无需额外配置。
 
 ## 故障排除
 
