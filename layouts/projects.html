@@ -129,13 +129,15 @@
               {{- $repoInfo = hugo.Store.Get (printf "repo:%v" $repo) -}}
             {{- end -}}
             {{- if not $repoInfo -}}
-              {{- if not ($warnScratch.Get "warned") -}}
-                {{- warnf "[component-projects] %v" (T "projects.warningNetwork") -}}
-                {{- $warnScratch.Set "warned" true -}}
+              {{- if hugo.IsServer -}}
+                {{- if not ($warnScratch.Get "warned") -}}
+                  {{- warnf "[component-projects] %v" (T "projects.warningNetwork") -}}
+                  {{- $warnScratch.Set "warned" true -}}
+                {{- end -}}
+                {{- $spinners := slice "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" -}}
+                {{- $idx := mod ($warnScratch.Get "counter" | default 0) (len $spinners) -}}
+                {{- warnf "%v %v" (index $spinners $idx) $repo -}}
               {{- end -}}
-              {{- $spinners := slice "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" -}}
-              {{- $idx := mod ($warnScratch.Get "counter" | default 0) (len $spinners) -}}
-              {{- warnf "%v %v" (index $spinners $idx) $repo -}}
               {{- $warnScratch.Set "counter" (add ($warnScratch.Get "counter" | default 0) 1) -}}
               {{- $url := printf "https://api.github.com/repos/%v" $repo -}}
               {{- $repoInfo = partial "function/get-remote-json" (dict "URL" $url "OPTIONS" $headers) -}}

@@ -57,13 +57,15 @@
         {{- /* Check hugo.Store global cache before hitting the API */ -}}
         {{- $repoInfo = hugo.Store.Get (printf "repo:%v" $repo) | default dict -}}
         {{- if not $repoInfo -}}
-          {{- if not ($warnScratch.Get "warned") -}}
-            {{- warnf "[component-projects] %v" (T "projects.warningNetwork") -}}
-            {{- $warnScratch.Set "warned" true -}}
+          {{- if hugo.IsServer -}}
+            {{- if not ($warnScratch.Get "warned") -}}
+              {{- warnf "[component-projects] %v" (T "projects.warningNetwork") -}}
+              {{- $warnScratch.Set "warned" true -}}
+            {{- end -}}
+            {{- $spinners := slice "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" -}}
+            {{- $idx := mod ($warnScratch.Get "counter" | default 0) (len $spinners) -}}
+            {{- warnf "%v [%v] %v" (index $spinners $idx) $.Site.Language.Label $repo -}}
           {{- end -}}
-          {{- $spinners := slice "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" -}}
-          {{- $idx := mod ($warnScratch.Get "counter" | default 0) (len $spinners) -}}
-          {{- warnf "%v [%v] %v" (index $spinners $idx) $.Site.Language.Label $repo -}}
           {{- $warnScratch.Set "counter" (add ($warnScratch.Get "counter" | default 0) 1) -}}
           {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
           {{- $repoInfo = partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers) -}}
