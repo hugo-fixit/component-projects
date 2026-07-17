@@ -16,17 +16,3 @@
   order: asc
   repos:
     - hugo-fixit/FixIt
-- title: My contributed
-  description: Below are some open source works I have contributed to.
-  contentAdapters: false
-  params:
-    hidden_from_home_page: true
-  categories:
-    - bar
-  collections:
-    - contributed
-  totalStars: false
-  orderby: default
-  order: asc
-  repos:
-    - gohugoio/hugo
