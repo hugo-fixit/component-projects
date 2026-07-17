@@ -102,7 +102,7 @@ Obtaining repositories information relies on GitHub official API. Before startin
 First, create the `projects.yml` file and edit your data:
 
 ```bash
-cp themes/component-projects/projects.yml.example data/projects.yml
+cp themes/component-projects/data/projects.yml data/projects.yml
 ```
 
 > If your site is multilingual, you can create a `projects.en.yml` file for English and `projects.zh-cn.yml` for Chinese.
