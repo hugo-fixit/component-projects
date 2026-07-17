@@ -21,7 +21,6 @@
 {{- $projectsAdapters := partial "function/camel-case-keys.html" .Site.Params.projects_adapters -}}
 
 {{- if $projectsAdapters.enable -}}
-  {{- warnf "component-projects\n%v" (T "projects.warningAdapter") -}}
   {{- $data := index hugo.Data (printf "projects.%v" .Site.Language.Name) | default hugo.Data.projects -}}
   {{- $renderedRepos := slice -}}
   {{- $auth := dict "Authorization" "" -}}
@@ -48,9 +47,13 @@
       {{- $isCached := false -}}
       {{- if $repoData -}}
         {{- $repoInfo = $repoData -}}
-        {{- $readme = $repoData.readme | default dict -}}
+        {{- $cachedReadme := $repoData.readme | default dict -}}
+        {{- /* Try localized README first, fall back to default */ -}}
+        {{- $langReadme := index $cachedReadme $.Site.Language.Name -}}
+        {{- $readme = $langReadme | default $cachedReadme -}}
         {{- $isCached = true -}}
       {{- else -}}
+        {{- warnf "[component-projects] %v:\n%v" $repo (T "projects.warningAdapter") -}}
         {{- $repoAPI := printf "https://api.github.com/repos/%v" $repo -}}
         {{- $repoInfo = partial "function/get-remote-json" (dict "URL" $repoAPI "OPTIONS" $headers) -}}
         {{- $readmeAPI := printf "https://api.github.com/repos/%v/contents/README.%v.md" $repo $.Site.Language.Name -}}
@@ -112,7 +115,10 @@
       {{- $configParams := $projectsAdapters.params | default dict -}}
       {{- $params = $groupParams | merge $configParams | merge $params -}}
       {{- /* Post content from repo README (cache content is already decoded) */ -}}
-      {{- $markdown := cond $isCached $readme.content ($readme.content | base64Decode) -}}
+      {{- $markdown := $readme.content -}}
+      {{- if not $isCached -}}
+        {{- $markdown = $readme.content | base64Decode -}}
+      {{- end -}}
       {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
       {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
       {{- $markdown = replace $markdown "{{%" "{{?{}%" -}}
