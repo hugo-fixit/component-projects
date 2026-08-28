@@ -234,16 +234,7 @@
     {{- end -}}
   </article>
 
-  <aside class="toc" id="toc-auto" aria-label="{{ T "single.contents" }}">
-    {{- /* Auto TOC */ -}}
-    {{- if $showToc -}}
-      <h2 class="toc-title">
-        {{- T "single.contents" -}}&nbsp;
-        {{- dict "Class" "toc-icon fa-solid fa-angle-down fa-fw" | partial "plugin/icon.html" -}}
-      </h2>
-      <div class="toc-content{{ if eq $toc.auto false }} always-active{{ end }}" id="toc-content-auto"></div>
-    {{- end -}}
-  </aside>
+  {{- partial "single/aside-toc.html" . -}}
 {{- end -}}
 
 {{- define "comments" -}}
