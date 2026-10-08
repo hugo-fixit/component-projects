@@ -1,12 +1,11 @@
 {{- define "title" -}}
   {{- title (.Params.Title | default ((T .Section) | default .Section | dict "Some" | T "allSome")) -}}
-  {{- if .Site.Params.withSiteTitle }} {{ .Site.Params.titleDelimiter }} {{ .Site.Title }}{{- end -}}
+  {{- if .Site.Params.with_site_title }} {{ .Site.Params.title_delimiter }} {{ .Site.Title }}{{- end -}}
 {{- end -}}
 
 {{- define "content" -}}
   {{- $pages := .Pages -}}
-  {{- $hiddenAdapters := .Param "hidden_adapters" | default false -}}
-  {{- if $hiddenAdapters -}}
+  {{- if .Param "hidden_adapters" -}}
     {{- $pages = where $pages "File.IsContentAdapter" "ne" true -}}
   {{- end -}}
   {{- $data := index hugo.Data (printf "projects.%v" .Language) | default hugo.Data.projects -}}
@@ -16,21 +15,11 @@
   {{- $hasToc := $contentToc | or (gt (len $data) 0) | or (gt (len $pages) 0) -}}
   {{- $showToc := $toc.enable | and $hasToc -}}
   {{- .Store.Set "showToc" $showToc -}}
-  {{- $localData := newScratch -}}
-  {{- $pageCount := 0 -}}
-  {{- /* Paginate before content */ -}}
-  {{- if $pages -}}
-    {{- $pageCount = $pages.Len -}}
-    {{- /* Total page and word count */ -}}
-    {{- range $pages -}}
-      {{- $localData.Add "totalWordCount" .WordCount -}}
-    {{- end -}}
-    {{- $pages = $pages.GroupByDate "2006" -}}
-    {{- with .Site.Params.section.paginate | default .Site.Params.paginate -}}
-      {{- $pages = $.Paginate $pages . -}}
-    {{- else -}}
-      {{- $pages = .Paginate $pages -}}
-    {{- end -}}
+  {{- $title := title (.Params.Title | default ((T .Section) | default .Section | dict "Some" | T "allSome")) -}}
+  {{- $pageCount := len $pages -}}
+  {{- $totalWords := 0 -}}
+  {{- with $pages -}}
+    {{- $totalWords = partial "function/total-word-count.html" . -}}
   {{- end -}}
 
   {{- /* component-projects.min.css */ -}}
@@ -48,16 +37,15 @@
   </aside>
 
   <article class="page archive projects single">
-    <div class="header">
-      {{- /* Title */ -}}
-      <h1 class="single-title animate__animated animate__pulse animate__faster">
+    {{- /* Title + subtitle */ -}}
+    <div class="archive-header">
+      <h1 class="archive-title animate__animated animate__pulse animate__faster">
         {{- with .Params.titleIcon -}}
           {{- dict "Class" (add . " fa-fw me-1") | partial "plugin/icon.html" -}}
         {{- end -}}
-        {{- title (.Params.Title | default ((T .Section) | default .Section | dict "Some" | T "allSome")) }}
+        {{- $title }}
       </h1>
-      {{- /* Subtitle */ -}}
-      {{- with .Params.subtitle -}}<p class="single-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>{{- end -}}
+      {{- with .Params.subtitle -}}<p class="archive-subtitle animate__animated animate__fadeIn">{{ . | $.RenderString }}</p>{{- end -}}
     </div>
 
     {{- /* Meta */ -}}
@@ -187,7 +175,7 @@
             <span>{{ T "projects.relatedArticles" }}</span>
             <a href="#related-articles" class="heading-mark"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></svg></a>
           </h2>
-          {{- with ($localData.Get "totalWordCount") -}}
+          {{- with $totalWords -}}
             <div title="{{- T `section.archiveCounter` $pageCount }} {{ T `section.totalWordCount` . }}" class="group-summary">
               {{- T "section.archiveCounter" $pageCount }} & {{ T "section.totalWordCount" (dict "Count" (partial "function/format-number" (dict "NUMBER" .))) -}}
             </div>
@@ -199,30 +187,14 @@
       </div>
     {{- end -}}
 
-    {{- /* Paginator render */ -}}
+    {{- /* Related articles list */ -}}
     {{- if $pages -}}
-      {{- partial "section/recently-updated.html" . -}}
-      {{- range $pages.PageGroups -}}
-        <h3 class="group-title">
-          {{- dict "Class" "fa-regular fa-calendar fa-fw me-1" | partial "plugin/icon.html" -}}
-          {{- .Key -}}
-        </h3>
-        {{- range .Pages -}}
-          <article class="archive-item">
-            <a href="{{ .RelPermalink }}" class="archive-item-link">
-              {{- $repost := .Params.repost | default dict -}}
-              {{- if eq $repost.enable true -}}
-                {{- dict "Class" "fa-solid fa-share fa-fw text-success me-1" | partial "plugin/icon.html" -}}
-              {{- end -}}
-              {{- .LinkTitle -}}
-            </a>
-            <span class="archive-item-date" title="{{ `2006-01-02 15:04:05` | .Date.Format }}">
-              {{- .Date | dateFormat ($.Site.Params.section.dateFormat | default "01-02") -}}
-            </span>
-          </article>
-        {{- end -}}
-      {{- end -}}
-      {{- partial "base/paginator.html" . -}}
+      {{- partial "section/archive-list.html" (dict
+        "Page" .
+        "Pages" $pages
+        "Paginate" (.Site.Params.section.paginate | default .Site.Params.paginate)
+        "DateFormat" (.Site.Params.section.date_format | default "01-02")
+      ) -}}
     {{- end -}}
 
     {{- if eq $.Paginator.PageNumber 1 -}}
