@@ -23,6 +23,7 @@
 {{- if $projectsAdapters.enable -}}
   {{- $data := index hugo.Data (printf "projects.%v" .Site.Language.Name) | default hugo.Data.projects -}}
   {{- $renderedRepos := slice -}}
+  {{- $seenAuthors := dict -}}
   {{- $auth := dict "Authorization" "" -}}
   {{- with (getenv "HUGO_PARAMS_GHTOKEN") -}}
     {{- $auth = dict "Authorization" (printf "token %v" .)  -}}
@@ -116,6 +117,24 @@
         "link" $repoInfo.owner.html_url
         "avatar" $repoInfo.owner.avatar_url
       -}}
+      {{- /* Seed an `authors` taxonomy term so /authors/<owner>/ exists for adapter pages. Keep `params.author_archive` in sync with `author = "authors"` in [taxonomies]. */ -}}
+      {{- if site.Params.author_archive | default true -}}
+        {{- $authorSlug := $author.name | urlize | urls.PathUnescape -}}
+        {{- if and $authorSlug (not (index $seenAuthors $authorSlug)) -}}
+          {{- $seenAuthors = merge $seenAuthors (dict $authorSlug true) -}}
+          {{- if not (fileExists (printf "content/authors/%s/_index.md" $authorSlug)) -}}
+            {{- $r := try ($.AddPage (dict
+              "kind" "term"
+              "path" (printf "../authors/%s" $authorSlug)
+              "title" $author.name
+              "content" (dict "mediaType" "text/markdown" "value" "")
+            )) -}}
+            {{- with $r.Err -}}
+              {{- warnf "component-projects: skip author term %q: %v" $author.name . -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
       {{- $categories := $group.categories | default $projectsAdapters.categories -}}
       {{- $collections := $group.collections | default $projectsAdapters.collections -}}
       {{- $subtitle := T "projects.source" (dict
@@ -147,7 +166,7 @@
       {{- if not $isCached -}}
         {{- $markdown = $readme.content | base64Decode -}}
       {{- end -}}
-      {{- /* Convert Hugo shortcodes to markdown plain text */ -}}
+      {{- /* Convert Hugo shortcodes to Markdown plain text */ -}}
       {{- $markdown = replace $markdown "{{<" "{{?{}<" -}}
       {{- $markdown = replace $markdown "{{%" "{{?{}%" -}}
       {{- /* Convert relative links to absolute links in the README content */ -}}
